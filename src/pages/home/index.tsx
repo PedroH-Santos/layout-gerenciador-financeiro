@@ -18,5 +18,5 @@ export default function Home() {
                 <InsertNewRegister> Novo Registro </InsertNewRegister>
             </BoxButton>
         </>
-    )
+    ) 
 }
