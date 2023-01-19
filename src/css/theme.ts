@@ -1,4 +1,5 @@
 
+
 export const theme = {
     colors: {
         brown800: "#736257",
@@ -15,5 +16,7 @@ export const theme = {
         
         white500: "#FFFFFF",
 
-    } 
+    },
+
+
 }
