@@ -19,7 +19,7 @@ export default function Home() {
                             <Input type="password" />
                         </BoxInput>
                     </Form>
-                    <Button type="button"> Logar </Button>
+                    <Button type="submit"> Logar </Button>
                 </Box>
             </Container>
         </>

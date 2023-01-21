@@ -21,5 +21,9 @@ export const GlobalStyle = createGlobalStyle`
             cursor:pointer;
         }
     }
+    html,body {
+        width: 100%;
+        height: 100%;
+    }
 
 `

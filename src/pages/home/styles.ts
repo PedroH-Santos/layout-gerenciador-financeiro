@@ -10,6 +10,13 @@ type IconsProps = ThemedStyledProps<FontAwesomeIconProps, any> & {
     wallet: IconsType
 }
 
+
+export const Body = styled.div`
+    width: 80%;
+    height: auto;
+`
+
+
 export const BoxHeader = styled.div`
     display:flex;
     justify-content:center;
@@ -52,7 +59,6 @@ export const BoxButton = styled.div`
     justify-content: flex-end;
     align-items: center;
     gap: 1rem;
-    max-width: 80%;
 `
 
 export const InsertNewRegister = styled.button`
