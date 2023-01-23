@@ -8,7 +8,7 @@ export enum RowTableTypes {
     "WITHDRAW"
 }
 
-type RowTableProps =  {
+type RowTableProps = {
     type: RowTableTypes
 }
 
@@ -46,28 +46,41 @@ export const FilterIcon = styled(FontAwesomeIcon)`
     width: 1.2rem;
     height: 1.2rem;
     margin-right:0.5rem;
-`   
+`
 
 
 export const Table = styled.table`
-
-
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
 `
-
-export const TrHead = styled.tr`
-    background-color: ${( props ) => props.theme.colors.brown500};
-
+export const TBody = styled.tbody`
+    
 `
 
 export const TrBody = styled.tr<RowTableProps>`
-    background-color: ${(props) => props.type == RowTableTypes.DEPOSIT ? props.theme.colors.green500 : props.theme.colors.red500 };
+    background-color: ${(props) => props.type == RowTableTypes.DEPOSIT ? props.theme.colors.green500 : props.theme.colors.red500};
+    margin-bottom: 1rem;  
+    width: 100%;
+`
+export const THead = styled.thead`
+   background-color: ${(props) => props.theme.colors.brown600};
+   th {
+    padding: 1.5rem;
+   }
 
 `
+
+
 export const Th = styled.th`
     color: ${(props) => props.theme.colors.white500};
 `
 export const Td = styled.td`
     color: ${(props) => props.theme.colors.white500};
+    padding: 1.5rem;
+        
 `
 
 export const Icon = styled(FontAwesomeIcon)`
