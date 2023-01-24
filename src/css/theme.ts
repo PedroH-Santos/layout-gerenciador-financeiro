@@ -15,6 +15,9 @@ export const theme = {
         orange300: "#FF7A00",
         
         white500: "#FFFFFF",
+    
+        black500: "#111111",
+
 
     },
 

@@ -4,8 +4,9 @@ import styled from "styled-components";
 
 
 export enum RowTableTypes {
-    "DEPOSIT",
-    "WITHDRAW"
+    "PAY",
+    "LATE",
+    "WAITING"
 }
 
 type RowTableProps = {
@@ -62,7 +63,15 @@ export const TBody = styled.tbody`
 `
 
 export const TrBody = styled.tr<RowTableProps>`
-    background-color: ${(props) => props.type == RowTableTypes.DEPOSIT ? props.theme.colors.green500 : props.theme.colors.red500};
+    background-color: ${(props) => {
+        if (props.type == RowTableTypes.PAY) {
+            return props.theme.colors.green500;
+        }else if(props.type == RowTableTypes.LATE) {
+            return props.theme.colors.red500;
+        }else {
+            return props.theme.colors.orange500;
+        }
+    }};
     margin-bottom: 1rem;  
     width: 100%;
 `
