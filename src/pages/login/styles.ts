@@ -39,25 +39,6 @@ export const BoxInput = styled.div`
 `
 
 
-export const Label = styled.label`
-    color: ${(props) => props.theme.colors.white500};
-    margin-right: 1rem;
-    align-items: center;
-
-
-`
-
-export const Input = styled.input`
-    background-color: ${(props) => props.theme.colors.brown800};
-    padding: 0.5rem;
-    border: 0;
-    border-radius:0.5rem;
-    color: ${(props) => props.theme.colors.white500};
-    
-    &:focus {
-        outline: none;
-    }
-`
 
 
 export const Button = styled.button`

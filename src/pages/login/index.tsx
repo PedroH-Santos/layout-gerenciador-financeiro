@@ -1,5 +1,6 @@
 
-import { Box, BoxInput, Button, Container, Form, Input, Label } from './styles';
+import { DefaultInput, DefaultLabel } from '@/css/default';
+import { Box, BoxInput, Button, Container, Form } from './styles';
 
 export default function Home() {
 
@@ -11,12 +12,12 @@ export default function Home() {
                 <Box>
                     <Form>
                         <BoxInput>
-                            <Label> Email </Label>
-                            <Input type="email" />
+                            <DefaultLabel> Email </DefaultLabel>
+                            <DefaultInput type="email" />
                         </BoxInput>
                         <BoxInput>
-                            <Label> Senha </Label>
-                            <Input type="password" />
+                            <DefaultLabel> Senha </DefaultLabel>
+                            <DefaultInput type="password" />
                         </BoxInput>
                     </Form>
                     <Button type="submit"> Logar </Button>

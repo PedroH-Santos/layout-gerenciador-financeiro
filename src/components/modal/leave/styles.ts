@@ -18,6 +18,7 @@ export const DialogContent = styled(BaseContent)`
 `
 
 
+
 export const DeleteButton = styled(DefaultButton)`
     background-color: ${(props) => props.theme.colors.red500};
 `

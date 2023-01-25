@@ -1,5 +1,7 @@
-import { Container, Button, FilterIcon, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
+import ModalDelete from "@/components/modal/delete";
+import { Container, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import ModalRegisterFilter from "@/components/modal/filter/register";
 
 
 export default function TableRegister() {
@@ -7,10 +9,7 @@ export default function TableRegister() {
         <Container>
             <Header>
                 <Title>Registros</Title>
-                <Button>
-                    <FilterIcon icon={faFilter} />
-                    Filtros
-                </Button>
+                <ModalRegisterFilter />
             </Header>
             <Table>
                 <THead>
@@ -29,7 +28,7 @@ export default function TableRegister() {
                         <Td>
                             <BoxIcons>
                                 <Icon icon={faPenToSquare} />
-                                <Icon icon={faTrashAlt} />
+                                <ModalDelete name="Pedro"/>
                             </BoxIcons>
                         </Td>
                     </TrBody>
@@ -40,7 +39,7 @@ export default function TableRegister() {
                         <Td>
                             <BoxIcons>
                                 <Icon icon={faPenToSquare} />
-                                <Icon icon={faTrashAlt} />
+                                <ModalDelete name="Pedro" />
                             </BoxIcons>
                         </Td>
                     </TrBody>

@@ -23,7 +23,7 @@ export const Container = styled.div`
     padding: 2rem;
     margin-top: 2rem;
 
-`
+` 
 
 export const Header = styled.div`
     display:flex;
@@ -36,19 +36,6 @@ export const Title = styled.h1`
     color: ${(props) => props.theme.colors.white500};
 
 `
-
-export const Button = styled(DefaultButton)`
-    padding: 1rem 1.5rem;
-`
-
-
-export const FilterIcon = styled(FontAwesomeIcon)`
-    color: ${(props) => props.theme.colors.white500};
-    width: 1.2rem;
-    height: 1.2rem;
-    margin-right:0.5rem;
-`
-
 
 export const Table = styled.table`
     width: 100%;
