@@ -1,3 +1,4 @@
+import ModalAccountFilter from "@/components/modal/filter/account";
 import { Container, Button, FilterIcon, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,10 +8,7 @@ export default function TableAccount() {
         <Container>
             <Header>
                 <Title>Contas</Title>
-                <Button>
-                    <FilterIcon icon={faFilter} />
-                    Filtros
-                </Button>
+                <ModalAccountFilter/>
             </Header>
             <Table>
                 <THead>

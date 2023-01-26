@@ -52,7 +52,7 @@ export const DefaultLabel = styled.label`
 
 export const DefaultInput = styled.input`
     background-color: ${(props) => props.theme.colors.brown800};
-    padding: 0.5rem;
+    padding: 0.8rem;
     border: 0;
     border-radius:0.5rem;
     color: ${(props) => props.theme.colors.white500};

@@ -4,7 +4,6 @@ import TableRegister from "@/components/table/register";
 import Menu from "@/components/menu";
 import Screen from "@/components/screen";
 import TableAccount from "@/components/table/account";
-import ModalDelete from "@/components/modal/delete";
 
 
 /* 
@@ -27,7 +26,7 @@ export default function Home() {
                     </BoxButton>
                     <TableRegister />
                     <TableAccount /> 
-                    <ModalDelete name="Pedro"/>
+
                 </Body>
             </Screen>
 
