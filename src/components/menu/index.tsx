@@ -1,6 +1,7 @@
 import { faReceipt, faRightFromBracket, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import Item from "./item";
-import { BoxIcon, BoxItems, Container, UserIcon, UserName } from "./styles";
+import { BoxIcon, BoxItems, Container} from "./styles";
+import ModalConfiguration from "../modal/configuration";
 
 
 
@@ -10,8 +11,7 @@ export default function Menu() {
     return (
         <Container>
             <BoxIcon>
-                <UserIcon />
-                <UserName> Pedro </UserName>
+                <ModalConfiguration name="Pedro" />
             </BoxIcon>
             <BoxItems>
                 <Item icon={faUserGroup} text="Grupos"/>

@@ -46,6 +46,7 @@ export const DefaultLabel = styled.label`
     color: ${(props) => props.theme.colors.white500};
     margin-right: 1rem;
     align-items: center;
+    text-align: center;
 
 
 `

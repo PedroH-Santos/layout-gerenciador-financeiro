@@ -30,14 +30,4 @@ export const BoxItems = styled.div`
 `
 
 
-export const UserIcon = styled.div`
-    border-radius:2rem;
-    background-color: ${(props) => props.theme.colors.white500};
-    padding:2rem;
-
-`
-
-export const UserName = styled.p`
-    color: ${(props) => props.theme.colors.white500};
-`
 
