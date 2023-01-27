@@ -1,4 +1,4 @@
-import ModalDelete from "@/components/modal/delete";
+import ModalDelete from "@/components/modal/delete/icon";
 import { Container, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import ModalRegisterFilter from "@/components/modal/filter/register";

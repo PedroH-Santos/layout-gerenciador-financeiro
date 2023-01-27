@@ -22,6 +22,8 @@ export const DefaultButtonLink = styled.a`
     padding: 1rem 3rem;
     border-radius:0.5rem;
     text-align: center;
+    display:flex;
+    gap: 1rem;
     transition: all 0.3s ease-in-out;
     &:hover {
         opacity: 0.8;

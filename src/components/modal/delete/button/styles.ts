@@ -1,7 +1,7 @@
 import { DefaultButton } from "@/css/default";
 import { Title } from "@radix-ui/react-dialog";
 import styled from "styled-components";
-import { BaseContent } from "../base/styles";
+import { BaseContent, BaseTrigger } from "../../base/styles";
 
 
 
@@ -30,4 +30,9 @@ export const ButtonContainer = styled.div`
     gap: 1rem;
     justify-content:center;
   
+`
+
+export const DialogTrigger = styled(BaseTrigger)`
+    display:flex;
+    gap: 1rem;
 `

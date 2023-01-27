@@ -2,7 +2,7 @@ import { Root, Trigger, Portal } from "@radix-ui/react-dialog";
 import {   DialogContent, DeleteButton, BackButton, ButtonContainer } from "./styles";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { BaseOverlay, BaseTrigger, BaseTitle } from "../base/styles";
+import { BaseOverlay, BaseTrigger, BaseTitle } from "../../base/styles";
 import { DefaultIcon } from "@/css/default";
 
 

@@ -9,7 +9,7 @@ import ModalGroupFilter from "@/components/modal/in/group";
 import ModalGroupIn from "@/components/modal/in/group";
 
 
-/* 
+/*  
 Fazer validação do Icone
 */
 export default function Home() {
