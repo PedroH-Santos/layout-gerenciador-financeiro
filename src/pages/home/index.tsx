@@ -5,6 +5,8 @@ import Menu from "@/components/menu";
 import Screen from "@/components/screen";
 import TableAccount from "@/components/table/account";
 import ModalRegisterInsert from "@/components/modal/insert/register";
+import ModalGroupFilter from "@/components/modal/in/group";
+import ModalGroupIn from "@/components/modal/in/group";
 
 
 /* 
@@ -27,7 +29,6 @@ export default function Home() {
                     </BoxButton>
                     <TableRegister />
                     <TableAccount />
-
                 </Body>
             </Screen>
 
