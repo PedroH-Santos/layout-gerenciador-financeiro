@@ -1,9 +1,10 @@
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import { Body, BoxButton, BoxHeader, BoxWallet, Icons, IconsType, InsertNewRegister, TextWallet } from "./styles";
+import { Body, BoxButton, BoxHeader, BoxWallet, Icons, IconsType, TextWallet } from "./styles";
 import TableRegister from "@/components/table/register";
 import Menu from "@/components/menu";
 import Screen from "@/components/screen";
 import TableAccount from "@/components/table/account";
+import ModalRegisterInsert from "@/components/modal/insert/register";
 
 
 /* 
@@ -22,10 +23,10 @@ export default function Home() {
                         </BoxWallet>
                     </BoxHeader>
                     <BoxButton>
-                        <InsertNewRegister> Novo Registro </InsertNewRegister>
+                        <ModalRegisterInsert />
                     </BoxButton>
                     <TableRegister />
-                    <TableAccount /> 
+                    <TableAccount />
 
                 </Body>
             </Screen>
