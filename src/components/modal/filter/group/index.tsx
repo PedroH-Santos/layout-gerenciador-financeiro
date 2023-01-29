@@ -6,7 +6,7 @@ import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/sty
 import { DefaultButton, DefaultInput, DefaultLabel } from "@/css/default";
 
 
-export default function ModalRegisterFilter() {
+export default function ModalGroupFilter() {
     const [open, setOpen] = useState(false);
 
 
@@ -25,14 +25,14 @@ export default function ModalRegisterFilter() {
             <Portal>
                 <BaseOverlay />
                 <BaseContent>
-                    <BaseTitle >  Filtrar Lançamentos </BaseTitle>
+                    <BaseTitle >  Filtrar Grupos </BaseTitle>
                     <Form>
                         <BoxInput>
-                            <DefaultLabel> Data de Lançamento </DefaultLabel>
+                            <DefaultLabel> Nome </DefaultLabel>
                             <DefaultInput type="text" />
                         </BoxInput>
                         <BoxInput>
-                            <DefaultLabel> Nome </DefaultLabel>
+                            <DefaultLabel> Codigo </DefaultLabel>
                             <DefaultInput type="text" />
                         </BoxInput>
                         <DefaultButton type="button"> Filtrar </DefaultButton>

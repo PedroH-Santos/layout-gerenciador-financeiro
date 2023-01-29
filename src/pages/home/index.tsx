@@ -7,6 +7,7 @@ import TableAccount from "@/components/table/account";
 import ModalRegisterInsert from "@/components/modal/insert/register";
 import ModalGroupFilter from "@/components/modal/in/group";
 import ModalGroupIn from "@/components/modal/in/group";
+import ModalGroupInsert from "@/components/modal/insert/group";
 
 
 /*  
@@ -29,6 +30,7 @@ export default function Home() {
                     </BoxButton>
                     <TableRegister />
                     <TableAccount />
+                    <ModalGroupInsert />
                 </Body>
             </Screen>
 

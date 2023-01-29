@@ -1,7 +1,7 @@
 import { DefaultButton } from "@/css/default";
 import { Title } from "@radix-ui/react-dialog";
 import styled from "styled-components";
-import { BaseContent } from "../base/styles";
+import { BaseContent } from "../../base/styles";
 
 
 
@@ -12,7 +12,7 @@ export const DialogContent = styled(BaseContent)`
     gap: 3rem;
     width: 600px;
     max-width: 600px;
-    height: 200px;
+    height: auto;
     text-align:center;
     
 `
