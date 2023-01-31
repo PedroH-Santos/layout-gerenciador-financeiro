@@ -1,5 +1,6 @@
 import { DefaultButton } from "@/css/default"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Link from "next/link"
 import styled from "styled-components"
 
 export const Container = styled.div`
@@ -73,3 +74,5 @@ export const BoxIcons = styled.div`
     gap: 0.8rem;
 `
 export const MoreLoadingButton = styled(DefaultButton)``
+
+export const DetailButton = styled(Link)``

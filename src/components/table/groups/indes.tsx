@@ -1,7 +1,7 @@
 import ModalGroupFilter from "@/components/modal/filter/group";
-import { BoxIcons, Container, Header, MoreLoadingButton, TBody, THead, Table, Td, Th, Title, TrBody } from "./styles";
+import { BoxIcons, Container, DetailButton, Header, MoreLoadingButton, TBody, THead, Table, Td, Th, Title, TrBody } from "./styles";
 import ModalGroupLeave from "@/components/modal/leave/group";
-import { DefaultIcon } from "@/css/default";
+import { DefaultButtonReactLink, DefaultIcon } from "@/css/default";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -33,7 +33,9 @@ export default function TableGroups() {
                         <Td> CBW27636 </Td>
                         <Td>
                             <BoxIcons>
-                                <DefaultIcon icon={faSearch} />
+                                <DetailButton href="/group/detail">
+                                    <DefaultIcon icon={faSearch} />
+                                </DetailButton>
                                 <ModalGroupLeave name="Churrasco" />
                             </BoxIcons>
 
