@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import styled from "styled-components";
 
 
@@ -24,6 +25,22 @@ export const DefaultButtonLink = styled.a`
     text-align: center;
     display:flex;
     gap: 1rem;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        opacity: 0.8;
+    }
+
+`
+
+export const DefaultButtonReactLink = styled(Link)`
+    background-color: ${(props) => props.theme.colors.brown600};
+    color: ${(props) => props.theme.colors.white500};
+    padding: 1rem 3rem;
+    border-radius:0.5rem;
+    text-align: center;
+    display:flex;
+    gap: 1rem;
+    text-decoration: none;
     transition: all 0.3s ease-in-out;
     &:hover {
         opacity: 0.8;

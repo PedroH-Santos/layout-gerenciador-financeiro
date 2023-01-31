@@ -30,7 +30,7 @@ export default function GroupDetail() {
                         <TextTitle> Grupo do churrsaco </TextTitle>
                         <BoxButton>
                             <ModalRegisterInsert />
-                            <DefaultButtonLink>
+                            <DefaultButtonLink href="">
                                 <DefaultIcon icon={faPenToSquare} />
                                 Editar
                             </DefaultButtonLink>

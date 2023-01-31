@@ -30,7 +30,6 @@ export default function Home() {
                     </BoxButton>
                     <TableRegister />
                     <TableAccount />
-                    <ModalGroupInsert />
                 </Body>
             </Screen>
 

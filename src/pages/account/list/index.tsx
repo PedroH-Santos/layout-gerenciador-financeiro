@@ -1,7 +1,7 @@
 import Menu from "@/components/menu";
 import Screen from "@/components/screen";
 import { Body, BoxButton, BoxTileAndActions, TextTitle } from "./styles";
-import { DefaultButton, DefaultButtonLink } from "@/css/default";
+import { DefaultButton, DefaultButtonLink, DefaultButtonReactLink } from "@/css/default";
 import TableAccount from "@/components/table/account";
 
 
@@ -19,9 +19,9 @@ export default function AccountList() {
                         <DefaultButton>
                             Criar Contas do Mês
                         </DefaultButton>
-                        <DefaultButtonLink>
+                        <DefaultButtonReactLink href={"/account/insert"}>
                             Cadastrar Conta
-                        </DefaultButtonLink>
+                        </DefaultButtonReactLink>
                     </BoxButton>
                 </BoxTileAndActions>
                 <TableAccount />

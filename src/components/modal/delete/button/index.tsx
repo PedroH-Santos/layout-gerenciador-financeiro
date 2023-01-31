@@ -21,7 +21,7 @@ export default function ModalDeleteButton({ name }: ModalDeleteProps) {
     return (
         <Root open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-                <DefaultButtonLink>
+                <DefaultButtonLink href="">
                     <DefaultIcon icon={faTrashAlt} />
                     Excluir
                 </DefaultButtonLink>
