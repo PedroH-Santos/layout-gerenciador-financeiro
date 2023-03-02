@@ -81,3 +81,8 @@ export const DefaultInput = styled.input`
         outline: none;
     }
 `
+
+
+export const DefaultInputError =styled.div`
+    color: ${(props) => props.theme.colors.red500}
+`
