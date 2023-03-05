@@ -1,5 +1,5 @@
 import { Root, Trigger, Portal } from "@radix-ui/react-dialog";
-import {  BoxInput, Button, FilterIcon, Form } from "./styles";
+import { BoxInput, Button, FilterIcon, Form } from "./styles";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
@@ -24,9 +24,9 @@ const groupFilterValidation = zod.object({
 })
 
 
-export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterProps ) {
+export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterProps) {
     const [open, setOpen] = useState(false);
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterGroupFormData> ({
+    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterGroupFormData>({
         resolver: zodResolver(groupFilterValidation)
     })
 
@@ -34,20 +34,27 @@ export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterPro
         setOpen(false);
     }
 
-    async function onFilter(form: FilterGroupFormData){
-    
+    async function onFilter(form: FilterGroupFormData) {
+        const { name, code } = form;
+        let groups = [];
 
-        
-        const groups = await api.get<ListGroups>('/groups/filter', {
-            params: {
-                name: form.name,
-                code: form.code
+        if (name == '' && code == ''){
+            groups = await api.get<ListGroups>('/groups').then((res) => {
+                return res.data.groups;
+            });
+        }else {
+            const params = {
+                name,
+                code,
             }
-        }).then((res) => {
-            console.log(res);
+            groups = await api.get<ListGroups>('/groups/filter', {
+                params
+            }).then((res) => {
+                return res.data.groups;
+            });
 
-            return res.data.groups;;
-        });
+        }
+
 
         onChangeGroups(groups);
     }
@@ -55,7 +62,7 @@ export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterPro
         <Root open={open} onOpenChange={setOpen}>
             <BaseTrigger>
                 <Button>
-                    <FilterIcon icon={faFilter}  />
+                    <FilterIcon icon={faFilter} />
                     Filtros
                 </Button>
             </BaseTrigger>

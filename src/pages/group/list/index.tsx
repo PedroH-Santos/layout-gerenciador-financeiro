@@ -29,7 +29,7 @@ export default function GroupList({ groupsInitial }: GroupListProps){
                     <TextTitle> Grupos </TextTitle>
                     <BoxButton>
                         <ModalGroupIn />
-                        <ModalGroupInsert />
+                        <ModalGroupInsert groups={groups}  onChangeGroups={setGroups} />
                     </BoxButton>
                 </BoxTileAndActions>
                 <TableGroups groups={groups} onChangeGroups={setGroups} />

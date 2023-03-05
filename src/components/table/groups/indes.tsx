@@ -6,10 +6,13 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { Group } from "@/@types/Group";
 
+
 type TableGroupsProps = {
     groups: Group[],
     onChangeGroups: Function,
 }
+
+
 
 
 
@@ -31,7 +34,7 @@ export default function TableGroups({ groups, onChangeGroups }: TableGroupsProps
                     </tr>
                 </THead>
                 <TBody >
-                    {groups.map(group => {
+                    {groups?.map(group => {
                         return (
                             <TrBody key={group.id}>
                                 <Td> {group.name} </Td>

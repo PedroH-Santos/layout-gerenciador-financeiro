@@ -4,6 +4,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
     
+  },
+  publicRuntimeConfig: {
+    apiURL: process.env.API_URL
   }
 }
 
