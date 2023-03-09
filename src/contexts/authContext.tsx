@@ -7,7 +7,7 @@ export const AuthContext = createContext({} as AuthContextType);
 
 interface AuthContextType {
     isAuthenticated: Boolean;
-    user: User;
+    user: User | undefined;
     signIn: (data: SignInData) => Promise<void>
 
 }
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: AuthContextProps) {
     }
 
 
-    function createCookiesToken(data: ResponseToken){
+    async function createCookiesToken(data: ResponseToken){
         setCookie(undefined, 'managerFinancial.token', data.access_token, {
             maxAge: 60 * 15, //15 minutes
             path: '/'
@@ -59,7 +59,8 @@ export function AuthProvider({ children }: AuthContextProps) {
             maxAge: 60 * 60 * 24, //1 hour
             path: '/'
         });
-        getNewUser(data.user.userId,data.access_token);
+        await getNewUser(data.access_token);
+
     }
 
     async function requestRefreshToken(refreshToken: string){
@@ -69,14 +70,13 @@ export function AuthProvider({ children }: AuthContextProps) {
         createCookiesToken(newToken.data);
     }
 
-    async function getNewUser(id: string | undefined, token: string){
-        if(id){
-            const response = await api.get<ResponseGetNewUser>(`/users/one/${id}`, {
+    async function getNewUser(token: string | undefined){
+        if (token){
+            const response = await api.get<ResponseGetNewUser>(`/login/profile`, {
                 headers: { 'Authorization': 'Bearer ' + token },
             });
             setUser(response.data.user);
-            console.log(user);
-            console.log(response.data.user);
+
         } 
 
     }
@@ -84,8 +84,9 @@ export function AuthProvider({ children }: AuthContextProps) {
         const { 'managerFinancial.token': token } = parseCookies();
         if (token) {
             //buscar os dados do usuário atualizado backend
-            getNewUser(user?.id,token);
-        }else{ 
+            getNewUser(token);
+            
+        }else{  
             const { 'managerFinancial.refreshToken': refreshToken } = parseCookies();
             if (refreshToken) {
                 requestRefreshToken(refreshToken);   
@@ -94,9 +95,7 @@ export function AuthProvider({ children }: AuthContextProps) {
             }
 
         }  
-        console.log(user); 
     }, []);
-
 
     
     return (
