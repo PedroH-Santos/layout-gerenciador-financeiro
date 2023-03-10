@@ -4,15 +4,38 @@ import { faRightFromBracket, faTrashAlt } from "@fortawesome/free-solid-svg-icon
 import { useState } from "react";
 import { BaseOverlay, BaseTrigger, BaseTitle } from "../../base/styles";
 import { DefaultIcon } from "@/css/default";
+import { Group } from "@/@types/Group";
+import { api } from "@/services/axios";
+import { OutGroup } from "@/@types/Request/OutGroup";
 
 
 type ModalLeaveProps = {
     name: string;
+    code: string;
+    groups: Group[];
+    onChangeGroups: Function;
 }
 
-export default function ModalGroupLeave({ name }: ModalLeaveProps) {
+export default function ModalGroupLeave({ name, code, groups, onChangeGroups}: ModalLeaveProps) {
     const [open, setOpen] = useState(false);
 
+
+    async function onLeaveGroup() {
+        
+        try {
+             await api.post<OutGroup>('/groups/members/out', {
+                code: code,
+            }).then((res) => {
+                return res.data.group;
+            });
+            const newGroupsList = groups.filter(group => group.code !== code);
+            onChangeGroups(newGroupsList);
+            setOpen(false);
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
 
     function onBack() {
         setOpen(false);
@@ -28,7 +51,7 @@ export default function ModalGroupLeave({ name }: ModalLeaveProps) {
                 <DialogContent>
                     <BaseTitle > Deseja sair do grupo {name} permanentemente? </BaseTitle>
                     <ButtonContainer>
-                        <DeleteButton> Sair </DeleteButton>
+                        <DeleteButton onClick={onLeaveGroup}> Sair </DeleteButton>
                         <BackButton onClick={onBack}> Voltar </BackButton> 
                     </ButtonContainer>
                     

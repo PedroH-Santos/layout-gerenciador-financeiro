@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthContextProps) {
             username,
             password
         });
-        createCookiesToken(response.data);
+        createCookiesToken(response.data); 
         Router.push('/group/list');
     }
 

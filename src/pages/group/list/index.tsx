@@ -8,10 +8,11 @@ import ModalGroupInsert from "@/components/modal/insert/group";
 import { Body, BoxButton, BoxTileAndActions, TextTitle } from "./styles";
 import TableGroups from "@/components/table/groups/indes";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { api } from "@/services/axios";
+import { api, getApiClient } from "@/services/axios";
 import { Group } from "@/@types/Group";
 import { ListGroups } from "@/@types/Request/ListGroups";
 import { useState } from "react";
+import { parseCookies } from "nookies";
 
 
 type GroupListProps = {
@@ -28,7 +29,7 @@ export default function GroupList({ groupsInitial }: GroupListProps){
                 <BoxTileAndActions>
                     <TextTitle> Grupos </TextTitle>
                     <BoxButton>
-                        <ModalGroupIn />
+                        <ModalGroupIn groups={groups} onChangeGroups={setGroups} />
                         <ModalGroupInsert groups={groups}  onChangeGroups={setGroups} />
                     </BoxButton>
                 </BoxTileAndActions>
@@ -40,8 +41,18 @@ export default function GroupList({ groupsInitial }: GroupListProps){
 }
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+    const { 'managerFinancial.token': token } = parseCookies(context);
+    if (!token) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            }
+        }
+    }
     
-    const groups = await api.get<ListGroups>('/groups').then((res) => { 
+    const apiBack = getApiClient(context);
+    const groups = await apiBack.get<ListGroups>('/groups').then((res) => { 
          return res.data.groups;;
     });
     

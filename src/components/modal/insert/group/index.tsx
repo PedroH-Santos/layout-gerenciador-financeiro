@@ -38,7 +38,7 @@ export default function ModalGroupInsert({ groups, onChangeGroups }: ModalGroupI
         });
 
         onChangeGroups([...groups,newGroup]);
-
+        setOpen(false);
         
     }
     return (
