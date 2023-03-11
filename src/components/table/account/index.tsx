@@ -1,54 +1,49 @@
 import ModalAccountFilter from "@/components/modal/filter/account";
-import { Container, Button, FilterIcon, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
+import { Container, Button, FilterIcon, Header, Title, Table, Th, THead, TBody, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { Account } from "@/@types/Account";
+import moment from "moment";
 
 
-export default function TableAccount() {
+type TableAccountProps = {
+    accounts: Account[];
+    onChangeAccounts: Function;
+}
+
+
+export default function TableAccount({ accounts, onChangeAccounts}: TableAccountProps) {
     return (
         <Container>
             <Header>
                 <Title>Contas</Title>
-                <ModalAccountFilter/>
+                <ModalAccountFilter onChangeAccounts={onChangeAccounts}/>
             </Header>
             <Table>
                 <THead>
                     <tr>
                         <Th> Nome </Th>
                         <Th> Preço </Th>
-                        <Th> Data de Vencimento </Th>
-                        <Th> Parcela </Th>
+                        <Th> Dia de Vencimento </Th>
+                        <Th> Parcelas </Th>
                         <Th> Tipo </Th>
                         <Th> Status </Th>
 
                     </tr>
                 </THead>
                 <TBody >
-                    <TrBody type={RowTableTypes.PAY}>
-                        <Td> Pedro </Td>
-                        <Td> R$ 90,00</Td>
-                        <Td> 19/01/2002 </Td>
-                        <Td> 1/12 </Td>
-                        <Td> Parcelada </Td>
-                        <Td> Paga </Td>
+                    {accounts.map(account => {
+                        return (
+                            <TrBody type={account.status} key={account.id}>
+                                <Td> {account.name} </Td>
+                                <Td> {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(account.price)}</Td>
+                                <Td> {account.dayDueDate} </Td>
+                                <Td> {account.installments} </Td>
+                                <Td> {account.type} </Td>
+                                <Td> {account.status} </Td>
 
-                    </TrBody>
-                    <TrBody type={RowTableTypes.LATE}>
-                        <Td> Pedro </Td>
-                        <Td> R$ 90,00</Td>
-                        <Td> 19/01/2002 </Td>
-                        <Td> 1/12 </Td>
-                        <Td> Recorrente </Td>
-                        <Td> Paga </Td>
-
-                    </TrBody>
-                    <TrBody type={RowTableTypes.WAITING}>
-                        <Td> Pedro </Td>
-                        <Td> R$ 90,00</Td>
-                        <Td> 19/01/2002 </Td>
-                        <Td> 1/12 </Td>
-                        <Td> Parcelada </Td>
-                        <Td> Aguardando Pagamento </Td>
-                    </TrBody>
+                            </TrBody>
+                        )
+                    })}
                 </TBody>
             </Table>
             <MoreLoadingButton> Ver mais </MoreLoadingButton>

@@ -3,14 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 
-export enum RowTableTypes {
-    "PAY",
-    "LATE",
-    "WAITING"
+
+enum StatusAccount {
+    PAYED = 'PAYED',
+    PENDING = 'PENDING',
+    LATED = 'LATED'
 }
 
 type RowTableProps = {
-    type: RowTableTypes
+    type: StatusAccount
 }
 
 export const Container = styled.div`
@@ -64,9 +65,9 @@ export const TBody = styled.tbody`
 
 export const TrBody = styled.tr<RowTableProps>`
     background-color: ${(props) => {
-        if (props.type == RowTableTypes.PAY) {
+    if (props.type == StatusAccount.PAYED) {
             return props.theme.colors.green500;
-        }else if(props.type == RowTableTypes.LATE) {
+    } else if (props.type == StatusAccount.PENDING) {
             return props.theme.colors.red500;
         }else {
             return props.theme.colors.orange500;
