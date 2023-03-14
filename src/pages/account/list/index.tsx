@@ -6,9 +6,12 @@ import TableAccount from "@/components/table/account";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 import { ListAccounts } from "@/@types/Request/ListAccounts";
-import { getApiClient } from "@/services/axios";
+import { api, getApiClient } from "@/services/axios";
 import { Account } from "@/@types/Account";
 import { useState } from "react";
+import ModalSuccess from "@/components/modal/statusAccountsRegister";
+import ModalStatusAccountsRegister from "@/components/modal/statusAccountsRegister";
+import ModalCreateAccountsRegisters from "@/components/modal/createAccountsRegisters";
 
 
 type AccountListProps = {
@@ -16,6 +19,11 @@ type AccountListProps = {
 }
 export default function AccountList({ accountsInitial }: AccountListProps) {
     const [accounts, setAccounts] = useState<Account[]>(accountsInitial);
+
+
+
+
+
     return (
         <Screen>
             <Menu />
@@ -23,18 +31,14 @@ export default function AccountList({ accountsInitial }: AccountListProps) {
                 <BoxTileAndActions>
                     <TextTitle> Grupo do churrsaco </TextTitle>
                     <BoxButton>
-                        <DefaultButton>
-                            Atualizar Status
-                        </DefaultButton>
-                        <DefaultButton>
-                            Criar Contas do Mês
-                        </DefaultButton>
+                        <ModalStatusAccountsRegister/>
+                        <ModalCreateAccountsRegisters/>
                         <DefaultButtonReactLink href={"/account/insert"}>
                             Cadastrar Conta
                         </DefaultButtonReactLink>
                     </BoxButton>
                 </BoxTileAndActions>
-                <TableAccount accounts={accounts} onChangeAccounts={setAccounts}/>
+                <TableAccount accounts={accounts} onChangeAccounts={setAccounts} />
             </Body>
         </Screen>
     )
@@ -57,7 +61,6 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         return res.data.accounts;
     });
 
-    console.log(accounts);
     return {
         props: { accountsInitial: accounts }
     }
