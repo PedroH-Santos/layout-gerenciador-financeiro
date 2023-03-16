@@ -1,82 +1,118 @@
-import { DefaultButton, DefaultInput, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
 import { BoxBreakInputs, BoxGroupSelection, BoxInput, Form, InputSelectGroup } from "./styles";
 import RadixSelect from "@/components/radix/select";
+import * as zod from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { api } from "@/services/axios";
+import { InsertAccount } from "@/@types/Request/InsertAccount";
+import { TypeAccount } from "@/enum/TypeAccount";
+import { StatusAccount } from "@/enum/StatusAccount";
+
+type CreateAccountFormData = {
+    name: string;
+    price: number;
+    dayDueDate: number;
+    installments: number;
+    type: TypeAccount;
+    status: StatusAccount;
+}
+const createAccountValidation = zod.object({
+    name: zod.string().min(1,'Digite um nome válido'),
+    price: zod.number(),
+    type: zod.string(),
+    status: zod.string(),
+    dayDueDate: zod.number(),
+    installments: zod.number().max(12),
+})
 
 
 export default function AccountForm() {
     const typeStatesAccount = [
         {
             "text": "Paga",
-            "value": "Paga"
+            "value": "PAYED"
         },
         {
             "text": "Atrasada",
-            "value": "Atrasada"
+            "value": "LATED"
         },
         {
             "text": "Aguardando Pagamento",
-            "value": "Aguardando"
+            "value": "PENDING"
         }
     ]
     const typeAccount = [
         {
             "text": "Recorrente",
-            "value": "Recorrente"
+            "value": "Recurrent"
         },
         {
             "text": "Parcelada",
-            "value": "Parcelada"
+            "value": "Parcel"
         }
     ]
-    const originAccount = [
-        {
-            "text": "Grupo",
-            "value": "Grupo"
-        },
-        {
-            "text": "Pessoal",
-            "value": "Pessoal"
-        }
-    ]
+    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<CreateAccountFormData>({
+        resolver: zodResolver(createAccountValidation)
+    })
+    async function onCreate(form: CreateAccountFormData ){
+        const {dayDueDate,installments,name,price,status,type} = form;
+        const newAccounts = await api.post<InsertAccount>('/accounts', {
+            name,
+            price: price,
+            status,
+            type,
+            installments: installments,
+            dayDueDate: dayDueDate,
+            groupId: '6e6b5085-709b-4f81-acc6-256970420c24'
+        }).then((res) => {
+            return res.data.account;
+        });
+    }
     return (
-        <Form>
+        <Form onSubmit={handleSubmit(onCreate)} method="post">
             <BoxBreakInputs>
                 <BoxInput>
                     <DefaultLabel> Nome </DefaultLabel>
-                    <DefaultInput />
+                    <DefaultInput  {...register('name')} />
+                    <DefaultInputError> {errors.name?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
                     <DefaultLabel> Preço </DefaultLabel>
-                    <DefaultInput />
+                    <DefaultInput  {...register('price', { valueAsNumber: true })} />
+                    <DefaultInputError> {errors.price?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
-                    <DefaultLabel> Data de Vencimento </DefaultLabel>
-                    <DefaultInput />
+                    <DefaultLabel> Dia de Vencimento </DefaultLabel>
+                    <DefaultInput  {...register('dayDueDate', { valueAsNumber: true})}  />
+                    <DefaultInputError> {errors.dayDueDate?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
-                    <RadixSelect name="Tipo" options={typeAccount} />
+                    <Controller control={control} name="type" defaultValue={TypeAccount.PARCEL}
+                        render={({ field: { onChange, value, ref, ...props } }) => (
+                            <RadixSelect name="Tipo" options={typeAccount} onValueChange={onChange} value={value} fncRef={ref} />
+                        )}
+                    />
+                    <DefaultInputError> {errors.status?.message} </DefaultInputError>
                 </BoxInput>
             </BoxBreakInputs>
             <BoxBreakInputs>
                 <BoxInput>
-                    <RadixSelect name="Origem" options={originAccount} />
-                </BoxInput>
-                <BoxInput>
-                    <RadixSelect name="Status" options={typeStatesAccount} />
+                    <Controller control={control} name="status" defaultValue={StatusAccount.PENDING}
+                        render={({ field: { onChange, value, ref, ...props } }) => (
+                            <RadixSelect name="Status" options={typeStatesAccount} onValueChange={onChange} value={value} fncRef={ref} />
+                        )}
+                    />
+                    <DefaultInputError> {errors.type?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
                     <DefaultLabel> Parcelas </DefaultLabel>
-                    <DefaultInput />
+                    <DefaultInput  {...register('installments', { valueAsNumber: true })} />
+                    <DefaultInputError> {errors.installments?.message} </DefaultInputError>
                 </BoxInput>
             </BoxBreakInputs>
             <BoxBreakInputs>
-                <BoxGroupSelection>
-                    <DefaultLabel> Grupos </DefaultLabel>
-                    <InputSelectGroup />
-                </BoxGroupSelection>
-            </BoxBreakInputs>
-            <BoxBreakInputs>
-                <DefaultButton>
+                <DefaultButton type="submit">
                     Cadastrar
                 </DefaultButton>
             </BoxBreakInputs>

@@ -68,9 +68,9 @@ export const TrBody = styled.tr<RowTableProps>`
     if (props.type == StatusAccount.PAYED) {
             return props.theme.colors.green500;
     } else if (props.type == StatusAccount.PENDING) {
-            return props.theme.colors.red500;
+        return props.theme.colors.orange500;
         }else {
-            return props.theme.colors.orange500;
+        return props.theme.colors.red500;
         }
     }};
     margin-bottom: 1rem;  

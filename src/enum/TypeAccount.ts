@@ -1,7 +1,7 @@
 
 
 
-enum TypeAccount {
+export enum TypeAccount {
     PARCEL = 'PARCEL',
     RECURRENT = 'RECURRENT',
 }
