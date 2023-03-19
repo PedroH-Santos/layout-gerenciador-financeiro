@@ -8,14 +8,19 @@ import { DefaultIcon } from "@/css/default";
 
 type ModalDeleteProps = {
     name: string;
+    onDeleteCallBack: Function;
+    idDelete: string;
 }
 
-export default function ModalDelete({ name }: ModalDeleteProps) {
+export default function ModalDelete({ name, onDeleteCallBack, idDelete }: ModalDeleteProps) {
     const [open, setOpen] = useState(false);
 
 
     function onBack() {
         setOpen(false);
+    }
+    function onDelete(){
+        onDeleteCallBack(idDelete)
     }
 
     return (
@@ -28,7 +33,7 @@ export default function ModalDelete({ name }: ModalDeleteProps) {
                 <DialogContent>
                     <BaseTitle > Deseja excluir {name} permanentemente? </BaseTitle>
                     <ButtonContainer>
-                        <DeleteButton> Excluir </DeleteButton>
+                        <DeleteButton onClick={onDelete}> Excluir </DeleteButton>
                         <BackButton onClick={onBack}> Voltar </BackButton> 
                     </ButtonContainer>
                     

@@ -1,15 +1,34 @@
 import ModalDelete from "@/components/modal/delete/icon";
-import { Container, Header, Title, Table, Th, THead, TBody, RowTableTypes, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
+import { Container, Header, Title, Table, Th, THead, TBody, Td, TrBody, Icon, BoxIcons, MoreLoadingButton } from "./styles";
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import ModalRegisterFilter from "@/components/modal/filter/register";
+import { Register } from "@/@types/Register";
+import moment from "moment";
+import { api } from "@/services/axios";
+import { ReturnRegister } from "@/@types/Request/ReturnRegister";
 
 
-export default function TableRegister() {
+export type TableRegisterProps = {
+    registers: Register[],
+    onChangeRegisters: Function,
+}
+
+export default function TableRegister({ registers, onChangeRegisters }: TableRegisterProps) {
+    
+    
+    async function onDeleteRegister(id: string) {
+        const registerDelete = await api.delete<ReturnRegister>(`registers/${id}`).then((res) => {
+            return res.data.register;
+        })
+        const filterRegister = registers.filter((register) => register.id !== registerDelete.id);
+        onChangeRegisters(filterRegister);
+    }
+    
     return (
         <Container>
             <Header>
                 <Title>Registros</Title>
-                <ModalRegisterFilter />
+                <ModalRegisterFilter onChangeRegisters={onChangeRegisters} />
             </Header>
             <Table>
                 <THead>
@@ -21,28 +40,21 @@ export default function TableRegister() {
                     </tr>
                 </THead>
                 <TBody >
-                    <TrBody type={RowTableTypes.DEPOSIT}>
-                        <Td> Pedro </Td>
-                        <Td> R$ 90,00</Td>
-                        <Td> 19/01/2002 </Td>
-                        <Td>
-                            <BoxIcons>
-                                <Icon icon={faPenToSquare} />
-                                <ModalDelete name="Pedro"/>
-                            </BoxIcons>
-                        </Td>
-                    </TrBody>
-                    <TrBody type={RowTableTypes.WITHDRAW}>
-                        <Td> Pedro </Td>
-                        <Td> R$ 90,00</Td>
-                        <Td> 19/01/2002 </Td>
-                        <Td>
-                            <BoxIcons>
-                                <Icon icon={faPenToSquare} />
-                                <ModalDelete name="Pedro" />
-                            </BoxIcons>
-                        </Td>
-                    </TrBody>
+                    {registers.map((register) => {
+                        return (
+                            <TrBody type={register.status} key={register.id}>
+                                <Td> {register.name} </Td>
+                                <Td> {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(register.price)}</Td>
+                                <Td> {moment(register.createdAt).format('DD/MM/yyyy')} </Td>
+                                <Td>
+                                    <BoxIcons>
+                                        <Icon icon={faPenToSquare} />
+                                        <ModalDelete name={register.name} onDeleteCallBack={onDeleteRegister} idDelete={register.id}/>
+                                    </BoxIcons>
+                                </Td>
+                            </TrBody>
+                        )
+                    })}
                 </TBody>
             </Table>
             <MoreLoadingButton> Ver mais </MoreLoadingButton>

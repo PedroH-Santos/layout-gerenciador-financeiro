@@ -1,15 +1,13 @@
 import { DefaultButton } from "@/css/default";
+import { StatusRegister } from "@/enum/StatusRegister";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 
-export enum RowTableTypes {
-    "DEPOSIT",
-    "WITHDRAW"
-}
+
 
 type RowTableProps = {
-    type: RowTableTypes
+    type: StatusRegister
 }
 
 export const Container = styled.div`
@@ -49,7 +47,7 @@ export const TBody = styled.tbody`
 `
 
 export const TrBody = styled.tr<RowTableProps>`
-    background-color: ${(props) => props.type == RowTableTypes.DEPOSIT ? props.theme.colors.green500 : props.theme.colors.red500};
+    background-color: ${(props) => props.type == StatusRegister.DEPOSIT ? props.theme.colors.green500 : props.theme.colors.red500};
     margin-bottom: 1rem;  
     width: 100%;
 `

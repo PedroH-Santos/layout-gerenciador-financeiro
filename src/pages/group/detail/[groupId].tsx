@@ -9,12 +9,28 @@ import { DefaultButton, DefaultButtonLink, DefaultIcon } from "@/css/default";
 import ModalDelete from "@/components/modal/delete/icon";
 import ModalDeleteButton from "@/components/modal/delete/button";
 import TableParticipants from "@/components/table/participants";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
+import { api, getApiClient } from "@/services/axios";
+import { Register } from "@/@types/Register";
+import { ListRegisters } from "@/@types/Request/ListRegisters";
+import { useState } from "react";
 
 
 
+type GroupDetailProps = {
+    registersInitial: Register[],
+    groupId: string;
+
+}
+
+type ParamsRoute = {
+    groupId: string,
+}
 
 
-export default function GroupDetail() {
+export default function GroupDetail({ registersInitial, groupId }: GroupDetailProps) {
+    const [registers,useRegisters] = useState<Register[]>(registersInitial);
     return (
         <>
             <Screen>
@@ -29,7 +45,7 @@ export default function GroupDetail() {
                     <BoxTileAndActions>
                         <TextTitle> Grupo do churrsaco </TextTitle>
                         <BoxButton>
-                            <ModalRegisterInsert />
+                            <ModalRegisterInsert registers={registers} onChangeRegister={useRegisters} groupId={groupId} />
                             <DefaultButtonLink href="">
                                 <DefaultIcon icon={faPenToSquare} />
                                 Editar
@@ -37,8 +53,8 @@ export default function GroupDetail() {
                             <ModalDeleteButton name="delete" />
                         </BoxButton>
                     </BoxTileAndActions>
-                    <TableRegister />
-                    <TableAccount />
+                    <TableRegister registers={registers} onChangeRegisters={useRegisters}/>
+                    <TableAccount accounts={[]} onChangeAccounts={() => {}}/>
                     <TableParticipants />
                 </Body>
             </Screen>
@@ -46,4 +62,29 @@ export default function GroupDetail() {
         </>
     )
 
+}
+
+
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+    const { 'managerFinancial.token': token } = parseCookies(context);
+    if (!token) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            }
+        }
+    }
+    const apiBack = getApiClient(context);
+    const { groupId } = context.params as unknown as ParamsRoute;
+    const registers = await apiBack.get<ListRegisters>(`/registers/${groupId}`).then((res) => {
+        return res.data.registers;
+    })
+
+    return {
+        props: { 
+            registersInitial: registers,
+            groupId,
+         },
+    }
 }

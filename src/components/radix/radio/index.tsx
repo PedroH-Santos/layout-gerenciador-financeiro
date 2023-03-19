@@ -6,14 +6,19 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 
 
-export default function RadixRadio(){
+type RadixRadioProps = {
+    onValueChange: (value: string) => void;
+    value: string;
 
-    const [value, setValue] = useState(TypesOptions.WITHDRAW.toString());
+}
+
+export default function RadixRadio({ value, onValueChange}: RadixRadioProps){
+
     return (
-        <Root value={value} onValueChange={setValue} defaultValue={value}>
+        <Root value={value} onValueChange={onValueChange} defaultValue={value}>
             <BoxOptions>
                 <div> 
-                    <RadixItem value='Deposit' checked={value == TypesOptions.DEPOSIT.toString()} >
+                    <RadixItem value='DEPOSIT' checked={value == TypesOptions.DEPOSIT.toString()} >
                         <RadixIndicator/> 
                             <Icon  typeoption={TypesOptions.DEPOSIT} icon={faCirclePlus}/> 
                             <DefaultLabel>
@@ -25,7 +30,7 @@ export default function RadixRadio(){
                 <Line/>
                 <div>
 
-                    <RadixItem value='Withdraw' checked={value == TypesOptions.WITHDRAW.toString()} >
+                    <RadixItem value='WITHDRAW' checked={value == TypesOptions.WITHDRAW.toString()} >
                         <RadixIndicator /> 
                         <Icon  typeoption={TypesOptions.WITHDRAW} icon={faCirclePlus} /> 
                             <DefaultLabel>
