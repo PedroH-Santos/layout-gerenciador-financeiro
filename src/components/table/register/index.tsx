@@ -6,6 +6,7 @@ import { Register } from "@/@types/Register";
 import moment from "moment";
 import { api } from "@/services/axios";
 import { ReturnRegister } from "@/@types/Request/ReturnRegister";
+import ModalRegisterEdit from "@/components/modal/edit/register";
 
 
 export type TableRegisterProps = {
@@ -23,7 +24,6 @@ export default function TableRegister({ registers, onChangeRegisters }: TableReg
         const filterRegister = registers.filter((register) => register.id !== registerDelete.id);
         onChangeRegisters(filterRegister);
     }
-    
     return (
         <Container>
             <Header>
@@ -48,7 +48,7 @@ export default function TableRegister({ registers, onChangeRegisters }: TableReg
                                 <Td> {moment(register.createdAt).format('DD/MM/yyyy')} </Td>
                                 <Td>
                                     <BoxIcons>
-                                        <Icon icon={faPenToSquare} />
+                                        <ModalRegisterEdit registers={registers} onChangeRegister={onChangeRegisters} currentRegister={register}/>
                                         <ModalDelete name={register.name} onDeleteCallBack={onDeleteRegister} idDelete={register.id}/>
                                     </BoxIcons>
                                 </Td>

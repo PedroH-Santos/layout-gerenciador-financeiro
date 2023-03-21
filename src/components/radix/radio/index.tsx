@@ -4,6 +4,7 @@ import {Root,Item,Indicator}  from '@radix-ui/react-radio-group';
 import { BoxOptions, Icon, Line, RadixIndicator, RadixItem, TypesOptions } from './styles';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import { StatusRegister } from "@/enum/StatusRegister";
 
 
 type RadixRadioProps = {
@@ -13,12 +14,11 @@ type RadixRadioProps = {
 }
 
 export default function RadixRadio({ value, onValueChange}: RadixRadioProps){
-
     return (
         <Root value={value} onValueChange={onValueChange} defaultValue={value}>
             <BoxOptions>
                 <div> 
-                    <RadixItem value='DEPOSIT' checked={value == TypesOptions.DEPOSIT.toString()} >
+                    <RadixItem value='DEPOSIT' checked={value == StatusRegister.DEPOSIT} >
                         <RadixIndicator/> 
                             <Icon  typeoption={TypesOptions.DEPOSIT} icon={faCirclePlus}/> 
                             <DefaultLabel>
@@ -30,7 +30,7 @@ export default function RadixRadio({ value, onValueChange}: RadixRadioProps){
                 <Line/>
                 <div>
 
-                    <RadixItem value='WITHDRAW' checked={value == TypesOptions.WITHDRAW.toString()} >
+                    <RadixItem value='WITHDRAW' checked={value == StatusRegister.WITHDRAW} >
                         <RadixIndicator /> 
                         <Icon  typeoption={TypesOptions.WITHDRAW} icon={faCirclePlus} /> 
                             <DefaultLabel>
