@@ -43,7 +43,7 @@ export default function TableGroups({ groups, onChangeGroups }: TableGroupsProps
                                 <Td> {group.code}  </Td>
                                 <Td>
                                     <BoxIcons>
-                                        <DetailButton href="/group/detail">
+                                        <DetailButton href={ `/group/detail/${group.id}`}>
                                             <DefaultIcon icon={faSearch} />
                                         </DetailButton>
                                         <ModalGroupLeave name={group.name} code={group.code} groups={groups} onChangeGroups={onChangeGroups} />

@@ -15,12 +15,22 @@ import { api, getApiClient } from "@/services/axios";
 import { Register } from "@/@types/Register";
 import { ListRegisters } from "@/@types/Request/ListRegisters";
 import { useState } from "react";
+import { ReturnAccountsRegisters } from "@/@types/Request/ReturnAccountsRegisters";
+import { AccountRegister } from "@/@types/AccountRegister";
+import TableAccountRegister from "@/components/table/accountRegister";
+import { ReturnMembers } from "@/@types/Request/ReturnMembers";
+import { User } from "@/@types/User";
+import { ReturnGroup } from "@/@types/Request/ReturnGroup";
+import { Group } from "@/@types/Group";
+import { Members } from "@/@types/Members";
 
 
 
 type GroupDetailProps = {
     registersInitial: Register[],
-    groupId: string;
+    accountsRegistersInitial: AccountRegister[],
+    membersInitial: Members[],
+    groupInitial: Group;
 
 }
 
@@ -29,8 +39,11 @@ type ParamsRoute = {
 }
 
 
-export default function GroupDetail({ registersInitial, groupId }: GroupDetailProps) {
+export default function GroupDetail({ registersInitial, accountsRegistersInitial, membersInitial, groupInitial }: GroupDetailProps) {
     const [registers,useRegisters] = useState<Register[]>(registersInitial);
+    const [accountsRegisters, useAccountsRegisters] = useState<AccountRegister[]>(accountsRegistersInitial);
+    const [members, UseMembers] = useState<Members[]>(membersInitial);
+    const [group, useGroup] = useState<Group>(groupInitial);
     return (
         <>
             <Screen>
@@ -45,7 +58,7 @@ export default function GroupDetail({ registersInitial, groupId }: GroupDetailPr
                     <BoxTileAndActions>
                         <TextTitle> Grupo do churrsaco </TextTitle>
                         <BoxButton>
-                            <ModalRegisterInsert registers={registers} onChangeRegister={useRegisters} groupId={groupId} />
+                            <ModalRegisterInsert registers={registers} onChangeRegister={useRegisters} groupId={group.id} />
                             <DefaultButtonLink href="">
                                 <DefaultIcon icon={faPenToSquare} />
                                 Editar
@@ -54,8 +67,8 @@ export default function GroupDetail({ registersInitial, groupId }: GroupDetailPr
                         </BoxButton>
                     </BoxTileAndActions>
                     <TableRegister registers={registers} onChangeRegisters={useRegisters}/>
-                    <TableAccount accounts={[]} onChangeAccounts={() => {}}/>
-                    <TableParticipants />
+                    <TableAccountRegister accountsRegisters={accountsRegisters} />
+                    <TableParticipants members={members} group={group}/>
                 </Body>
             </Screen>
 
@@ -81,10 +94,24 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         return res.data.registers;
     })
 
+    const accountsRegisters = await apiBack.get<ReturnAccountsRegisters>(`/accounts/registers/${groupId}`).then((res) => {
+        return res.data.registers;
+    })
+
+    const members = await apiBack.get<ReturnMembers>(`/groups/members/${groupId}`).then((res) => {
+        return res.data.members;
+    })
+
+    const group = await apiBack.get<ReturnGroup>(`/groups/one/${groupId}`).then((res => {
+        return res.data.group;
+    }))
+
     return {
         props: { 
             registersInitial: registers,
-            groupId,
+            accountsRegistersInitial: accountsRegisters,
+            membersInitial: members,
+            groupInitial: group,
          },
     }
 }
