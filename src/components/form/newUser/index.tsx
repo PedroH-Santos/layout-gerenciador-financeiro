@@ -2,7 +2,8 @@ import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { DefaultButtonLink, DefaultInput, DefaultInputError, DefaultLabel } from '@/css/default';
-import { BoxInput, Button, Form } from './styles';
+import { BoxImagePreLoad, BoxInput, BoxInputFile, Button, Form, ImagePreLoad, InputFile } from './styles';
+import Image from "next/image";
 
 type NewUserFormData = {
     name: string;
@@ -14,7 +15,7 @@ const newUserValidation = zod.object({
     name: zod.string().min(1,'Digite um nome válido'),
     email: zod.string().min(1, 'Digite um email válido').email(),
     password: zod.string().min(6, 'A Senha deve ter pelo menos 6 caracteres'),
-    image: zod.string().min(1,'Insira uma imagem de perfil'),
+    image: zod.any().refine((files) => { return files?.length == 1; }, "Escolha uma imagem."),
 })
 
 export default function NewUserForm(){
@@ -22,8 +23,24 @@ export default function NewUserForm(){
         resolver: zodResolver(newUserValidation)
     })
 
-    async function onNewUser() {
+    async function onNewUser(form: NewUserFormData ) {
+        console.log(form);
+    }
 
+
+    async function preLoadImage(event: any){
+        const imageFiles = event.target.files;
+        const imageFilesLength = imageFiles.length;
+
+        if(imageFilesLength > 0) {
+            const imageSrc = URL.createObjectURL(imageFiles[0]);
+            const imagePreviewElement: any = document.querySelector("#preview-selected-image");
+            if (imagePreviewElement != null) {
+                imagePreviewElement.src = imageSrc;
+            }
+            
+            
+        }
     }
     return (
         <Form onSubmit={handleSubmit(onNewUser)} method="post">
@@ -45,12 +62,15 @@ export default function NewUserForm(){
                 <DefaultInputError> {errors.password?.message} </DefaultInputError>
 
             </BoxInput>
-            <BoxInput>
+            <BoxInputFile>
                 <DefaultLabel> Imagem </DefaultLabel>
-                <DefaultInput type="image" {...register('image')} />
+                <InputFile type="file" {...register('image')} accept="image/*" onChange={preLoadImage} />
+                <BoxImagePreLoad>
+                    <ImagePreLoad id="preview-selected-image" src={""} alt={""} />
+                </BoxImagePreLoad>
                 <DefaultInputError> {errors.image?.message} </DefaultInputError>
 
-            </BoxInput>
+            </BoxInputFile>
             <Button type="submit"> Cadastrar </Button>
         </Form>
     )
