@@ -10,16 +10,16 @@ import { BaseTrigger, BaseOverlay, BaseTitle } from "../base/styles";
 
 
 type ModalCreateAccountsRegistersProps = {
-
+    groupId: string
 
 }
 
-export default function ModalCreateAccountsRegisters() {
+export default function ModalCreateAccountsRegisters({ groupId }: ModalCreateAccountsRegistersProps) {
     const [open, setOpen] = useState(false);
 
 
     async function onCreateRegistersAccounts() {
-        await api.post('/accounts/registers/create');
+        await api.post(`/accounts/registers/create/${groupId}`);
 
     }
 

@@ -11,15 +11,15 @@ import { BaseTrigger, BaseOverlay, BaseTitle } from "../base/styles";
 
 type ModalStatusAccountsRegisterProps = {
 
-
+    groupId: string;
 }
 
-export default function ModalStatusAccountsRegister() {
+export default function ModalStatusAccountsRegister({ groupId }: ModalStatusAccountsRegisterProps) {
     const [open, setOpen] = useState(false);
 
 
     async function onUpdateStatusRegistersAccounts() {
-        await api.put('/accounts/registers/status');
+        await api.put(`/accounts/registers/status/${groupId}`);
 
     }
 

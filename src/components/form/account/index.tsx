@@ -17,6 +17,10 @@ type CreateAccountFormData = {
     type: TypeAccount;
     status: StatusAccount;
 }
+
+type AccountFormProps = {
+    groupId: string;
+}
 const createAccountValidation = zod.object({
     name: zod.string().min(1,'Digite um nome válido'),
     price: zod.number(),
@@ -27,7 +31,7 @@ const createAccountValidation = zod.object({
 })
 
 
-export default function AccountForm() {
+export default function AccountForm({ groupId }: AccountFormProps) {
     const typeStatesAccount = [
         {
             "text": "Paga",
@@ -45,11 +49,11 @@ export default function AccountForm() {
     const typeAccount = [
         {
             "text": "Recorrente",
-            "value": "Recurrent"
+            "value": "RECURRENT"
         },
         {
             "text": "Parcelada",
-            "value": "Parcel"
+            "value": "PARCEL"
         }
     ]
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<CreateAccountFormData>({
@@ -64,7 +68,7 @@ export default function AccountForm() {
             type,
             installments: installments,
             dayDueDate: dayDueDate,
-            groupId: '6e6b5085-709b-4f81-acc6-256970420c24'
+            groupId: groupId
         }).then((res) => {
             return res.data.account;
         });

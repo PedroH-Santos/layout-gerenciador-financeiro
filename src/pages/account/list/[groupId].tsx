@@ -16,8 +16,12 @@ import ModalCreateAccountsRegisters from "@/components/modal/createAccountsRegis
 
 type AccountListProps = {
     accountsInitial: Account[],
+    groupId: string,
 }
-export default function AccountList({ accountsInitial }: AccountListProps) {
+type ParamsRoute = {
+    groupId: string,
+}
+export default function AccountList({ accountsInitial, groupId }: AccountListProps) {
     const [accounts, setAccounts] = useState<Account[]>(accountsInitial);
 
 
@@ -31,9 +35,9 @@ export default function AccountList({ accountsInitial }: AccountListProps) {
                 <BoxTileAndActions>
                     <TextTitle> Grupo do churrsaco </TextTitle>
                     <BoxButton>
-                        <ModalStatusAccountsRegister/>
-                        <ModalCreateAccountsRegisters/>
-                        <DefaultButtonReactLink href={"/account/insert"}>
+                        <ModalStatusAccountsRegister groupId={groupId}/>
+                        <ModalCreateAccountsRegisters groupId={groupId} />
+                        <DefaultButtonReactLink href={`/account/insert/${groupId}`}>
                             Cadastrar Conta
                         </DefaultButtonReactLink>
                     </BoxButton>
@@ -55,13 +59,17 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
             }
         }
     }
-
+    const { groupId } = context.params as unknown as ParamsRoute;
     const apiBack = getApiClient(context);
-    const accounts = await apiBack.get<ListAccounts>('/accounts').then((res) => {
+    const accounts = await apiBack.get<ListAccounts>(`/accounts/${groupId}`).then((res) => {
         return res.data.accounts;
     });
 
     return {
-        props: { accountsInitial: accounts }
+        props: {
+            accountsInitial: accounts, 
+            groupId,
+        }
+    
     }
 }

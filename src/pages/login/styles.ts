@@ -11,7 +11,7 @@ export const Container = styled.div`
 `;
 export const Box = styled.div`
     background-color: ${(props) => props.theme.colors.brown300};
-    height: 15rem;
+    height: auto;
     width: 40rem;
     padding: 10rem;
     align-self: center;
@@ -24,29 +24,3 @@ export const Box = styled.div`
     border-radius:0.5rem;
 
 `;
-export const Form = styled.form`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 2rem;
-`
-
-export const BoxInput = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-`
-
-
-
-
-export const Button = styled.button`
-    background-color: ${(props) => props.theme.colors.brown600};
-    color: ${(props) => props.theme.colors.white500};
-    padding: 1rem;
-    width: 10rem;
-    border-radius: 0.5rem;
-    border: 0px;
-
-`   

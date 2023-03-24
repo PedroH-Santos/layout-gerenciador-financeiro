@@ -12,7 +12,7 @@ export const DialogContent = styled(BaseContent)`
     gap: 3rem;
     width: 600px;
     max-width: 600px;
-    height: 200px;
+    height: 300px;
     text-align:center;
     
 `

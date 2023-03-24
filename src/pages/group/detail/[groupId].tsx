@@ -19,10 +19,10 @@ import { ReturnAccountsRegisters } from "@/@types/Request/ReturnAccountsRegister
 import { AccountRegister } from "@/@types/AccountRegister";
 import TableAccountRegister from "@/components/table/accountRegister";
 import { ReturnMembers } from "@/@types/Request/ReturnMembers";
-import { User } from "@/@types/User";
 import { ReturnGroup } from "@/@types/Request/ReturnGroup";
 import { Group } from "@/@types/Group";
 import { Members } from "@/@types/Members";
+import ModalGroupEdit from "@/components/modal/edit/group";
 
 
 
@@ -44,6 +44,13 @@ export default function GroupDetail({ registersInitial, accountsRegistersInitial
     const [accountsRegisters, useAccountsRegisters] = useState<AccountRegister[]>(accountsRegistersInitial);
     const [members, UseMembers] = useState<Members[]>(membersInitial);
     const [group, useGroup] = useState<Group>(groupInitial);
+    
+    async function onDeleteGroup(id: string) {
+        const groupDelete = await api.delete<ReturnGroup>(`groups/${id}`).then((res) => {
+            return res.data.group;
+        })
+    }
+    
     return (
         <>
             <Screen>
@@ -56,14 +63,14 @@ export default function GroupDetail({ registersInitial, accountsRegistersInitial
                         </BoxWallet>
                     </BoxHeader>
                     <BoxTileAndActions>
-                        <TextTitle> Grupo do churrsaco </TextTitle>
+                        <TextTitle> {group.name} </TextTitle>
                         <BoxButton>
                             <ModalRegisterInsert registers={registers} onChangeRegister={useRegisters} groupId={group.id} />
-                            <DefaultButtonLink href="">
-                                <DefaultIcon icon={faPenToSquare} />
-                                Editar
+                            <ModalGroupEdit currentGroup={group} onChangeGroup={useGroup}  />
+                            <ModalDeleteButton name={group.name} onDeleteCallBack={onDeleteGroup} idDelete={groupInitial.id} />
+                            <DefaultButtonLink href={`/account/list/${group.id}`}>
+                                Contas
                             </DefaultButtonLink>
-                            <ModalDeleteButton name="delete" />
                         </BoxButton>
                     </BoxTileAndActions>
                     <TableRegister registers={registers} onChangeRegisters={useRegisters}/>
