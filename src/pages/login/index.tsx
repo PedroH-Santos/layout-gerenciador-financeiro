@@ -8,16 +8,16 @@ import NewUserForm from '@/components/form/newUser';
 export default function Home() {
 
 
-    const [showFormRegister, useShowFormRegister] = useState(true);
+    const [showFormRegister, useShowFormRegister] = useState(false);
 
     return (
         <>
             <Container>
                 <Box>
                     {(!showFormRegister) ? (
-                        <LoginForm />
+                        <LoginForm onChangeShowFormCreateNewUser={useShowFormRegister} />
                     ) : (
-                        <NewUserForm />
+                        <NewUserForm onChangeShowFormCreateNewUser={useShowFormRegister} />
                     )}
 
 

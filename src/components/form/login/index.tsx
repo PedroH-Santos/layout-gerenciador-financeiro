@@ -11,11 +11,15 @@ type LoginFormData = {
     username: string;
     password: string;
 }
+
+type LoginFormProps = {
+    onChangeShowFormCreateNewUser: Function,
+}
 const loginValidation = zod.object({
     username: zod.string().min(1, 'Digite um email válido').email(),
     password: zod.string().min(6, 'A Senha deve ter pelo menos 6 caracteres')
 })
-export default function LoginForm(){
+export default function LoginForm({ onChangeShowFormCreateNewUser  }: LoginFormProps){
     
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<LoginFormData>({
         resolver: zodResolver(loginValidation)
@@ -25,6 +29,11 @@ export default function LoginForm(){
         const { username, password } = form;
         await signIn({ username, password });
     }
+
+    async function onShowFormCreateNewUser(){
+        onChangeShowFormCreateNewUser(true);
+    }
+
     return (
         <Form onSubmit={handleSubmit(onLogin)} method="post">
             <BoxInput>
@@ -40,7 +49,7 @@ export default function LoginForm(){
 
             </BoxInput>
             <Button type="submit"> Logar </Button>
-            <DefaultButtonLink onClick={() => { }}> Cadastrar </DefaultButtonLink>
+            <DefaultButtonLink onClick={onShowFormCreateNewUser}> Cadastrar novo usuario </DefaultButtonLink>
         </Form>
     )
 }
