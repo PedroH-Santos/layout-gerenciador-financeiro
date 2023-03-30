@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { BaseContent, BaseTrigger } from "../base/styles";
+import Image from "next/image"
 
 
 export const DialogTrigger = styled(BaseTrigger)`
@@ -23,10 +24,21 @@ export const DialogContent = styled(BaseContent)`
 `
 
 export const UserIcon = styled.div`
-    border-radius:2rem;
-    background-color: ${(props) => props.theme.colors.white500};
-    padding:2rem;
+    background-color: ${(props) => props.theme.colors.brown500};
+     height: 4rem;
+     width: 100%;
+     border-radius: 5rem;
+     overflow: hidden;
 
+`
+
+
+export const ImageUser = styled(Image)`
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: 100% 100%; 
+    
 `
 export const UserName = styled.p`
     color: ${(props) => props.theme.colors.white500};
@@ -66,6 +78,35 @@ export const Form = styled.form`
     justify-content: left;
     align-items: center;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
 
+`
+
+
+export const BoxImagePreLoad = styled.div`
+    background-color: ${(props) => props.theme.colors.brown500};
+     height: 200px;
+     width: 60%;
+     border-radius: 5rem;
+     overflow: hidden;
+
+    
+
+`
+
+export const ImagePreLoad = styled(Image)`
+    height: 100%;
+    width: 100%;
+    padding: 2rem;
+    object-fit: cover;
+    object-position: 25% 25%; 
+    
+`
+
+export const BoxInputFile = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 `

@@ -2,21 +2,22 @@ import { faHouse, faReceipt, faRightFromBracket, faUserGroup } from "@fortawesom
 import Item from "./item";
 import { BoxIcon, BoxItems, Container} from "./styles";
 import ModalConfiguration from "../modal/configuration";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/authContext";
 
 
 
 
 export default function Menu() {
-
+    const {user}  = useContext(AuthContext);
+    
     return (
         <Container>
             <BoxIcon>
-                <ModalConfiguration name="Pedro" />
+                <ModalConfiguration user={user}/>
             </BoxIcon>
             <BoxItems>
-                <Item icon={faHouse} text="Página Inicial" link="/home" />
                 <Item icon={faUserGroup} text="Grupos" link="/group/list"/>
-                <Item icon={faReceipt} text="Contas" link="/account/list"/>
                 <Item icon={faRightFromBracket} text="Sair" link=""/>
             </BoxItems>
         </Container>

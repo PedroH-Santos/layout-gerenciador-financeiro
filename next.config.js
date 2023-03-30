@@ -7,7 +7,11 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     apiURL: process.env.API_URL
-  }
+  },
+    images: {
+      domains: ['localhost'],
+    },
+
 }
 
 module.exports = nextConfig

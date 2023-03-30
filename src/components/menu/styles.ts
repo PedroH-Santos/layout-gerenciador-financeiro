@@ -19,6 +19,7 @@ export const BoxIcon = styled.div`
     justify-content:center;
     align-items:center;
     gap: 1rem;
+    margin-top: 2rem;
 `
 
 export const BoxItems = styled.div`
