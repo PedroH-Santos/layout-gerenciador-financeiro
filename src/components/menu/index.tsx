@@ -8,13 +8,11 @@ import { AuthContext } from "@/contexts/authContext";
 
 
 
-export default function Menu() {
-    const {user}  = useContext(AuthContext);
-    
+export default function Menu() {    
     return (
         <Container>
             <BoxIcon>
-                <ModalConfiguration user={user}/>
+                <ModalConfiguration />
             </BoxIcon>
             <BoxItems>
                 <Item icon={faUserGroup} text="Grupos" link="/group/list"/>

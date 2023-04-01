@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BaseOverlay, BaseTrigger, BaseTitle } from "../base/styles";
 import { Root, Trigger, Portal } from "@radix-ui/react-dialog";
 import { UserIcon, UserName, DialogTrigger, BoxInput, DialogContent, BoxUpload, UserIconConfig, Form, ImageUser, BoxInputFile, BoxImagePreLoad, ImagePreLoad } from "./styles";
@@ -12,35 +12,41 @@ import { api } from "@/services/axios";
 import { ReturnImage } from "@/@types/Request/ReturnImage";
 import { ReturnUser } from "@/@types/Request/ReturnUser";
 import { User } from "@/@types/User";
+import { AuthContext } from "@/contexts/authContext";
 
 type ModalConfigurationProps = {
-    user: User | undefined
+  
 }
 type EditUserFormData = {
     name: string;
     email: string;
-    password: string;
     image: string;
 }
 
+type inputFileType = Element & {
+    files: any;
+}
+
 const editUserValidation = zod.object({
-    name: zod.string().optional(),
-    email: zod.string().optional(),
-    password: zod.string().optional(),
+    name: zod.string().min(1, 'Digite um nome válido'),
+    email: zod.string().min(1, 'Digite um email válido').email(),
     image: zod.any().optional(),
 })
 
 
-export default function ModalConfiguration({ user }: ModalConfigurationProps) {
+export default function ModalConfiguration() {
     const [open, setOpen] = useState(false);
+    const { refreshDataUser, user  } = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<EditUserFormData>({
         resolver: zodResolver(editUserValidation)
     })
-    const [imagePreLoadURL, setImagePreLoadURL] = useState("");
-    async function onNewUser(form: EditUserFormData) {
-        const { name, email, password, image: imageObject } = form;
+    const imageUser = "http://localhost:3000/public/" + user?.image as string;
+    const [imagePreLoadURL, setImagePreLoadURL] = useState<string>(imageUser);
+    async function onEditUser(form: EditUserFormData) {
+        const { name, email, image: imageObject } = form;
+
         let editImage = "";
-        if (imageObject.length > 0){
+        if (imageObject.length > 0) {
             const formData = new FormData();
             formData.append('file', imageObject[0]);
             const uploadImage = await api.post<ReturnImage>(`users/upload/image`, formData, {
@@ -49,22 +55,22 @@ export default function ModalConfiguration({ user }: ModalConfigurationProps) {
                 return res.data.file;
             });
             editImage = uploadImage.filename;
+        }else {
+            editImage = user?.image as string;
         }
-
 
         const newUser = await api.put<ReturnUser>(`/users/${user?.id}`, {
             name,
             email,
-            password,
             image: editImage
         }).then((res) => {
             return res.data.user;
         });
+
+        await refreshDataUser();
     }
 
-    useEffect(() => {
-        setImagePreLoadURL("http://localhost:3000/public/" + user?.image);
-    }),[] 
+
 
     async function preLoadImage(event: any) {
         const imageFiles = event.target.files;
@@ -79,8 +85,8 @@ export default function ModalConfiguration({ user }: ModalConfigurationProps) {
         <Root open={open} onOpenChange={setOpen}>
             <DialogTrigger>
                 <UserIcon>
-                    { user?.image != undefined && (
-                        <ImageUser src={"http://localhost:3000/public/" + user?.image} alt={"Usuário Logo"}  width="50" height="50"/> 
+                    {user?.image != undefined && (
+                        <ImageUser src={"http://localhost:3000/public/" + user?.image} alt={"Usuário Logo"} width="50" height="50" />
                     )}
                 </UserIcon>
                 <UserName> {user?.name != undefined ? user?.name : "Sem Nome"} </UserName>
@@ -89,7 +95,7 @@ export default function ModalConfiguration({ user }: ModalConfigurationProps) {
                 <BaseOverlay />
                 <DialogContent>
                     <BaseTitle > Configurações </BaseTitle>
-                    <Form onSubmit={handleSubmit(onNewUser)} method="post">
+                    <Form onSubmit={handleSubmit(onEditUser)} method="post">
                         <BoxInput>
                             <DefaultLabel> Nome </DefaultLabel>
                             <DefaultInput type="text" {...register('name')} defaultValue={user?.name} />

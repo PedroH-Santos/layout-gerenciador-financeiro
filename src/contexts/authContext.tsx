@@ -9,6 +9,7 @@ interface AuthContextType {
     isAuthenticated: Boolean;
     user: User | undefined;
     signIn: (data: SignInData) => Promise<void>
+    refreshDataUser: () => Promise<void>
 
 }
 
@@ -80,6 +81,12 @@ export function AuthProvider({ children }: AuthContextProps) {
         } 
 
     }
+
+    async function refreshDataUser(){
+        const { 'managerFinancial.token': token } = parseCookies();
+        getNewUser(token);
+    }
+
     useEffect(() => {
         const { 'managerFinancial.token': token } = parseCookies();
         if (token) {
@@ -99,7 +106,7 @@ export function AuthProvider({ children }: AuthContextProps) {
 
     
     return (
-        <AuthContext.Provider value={{ user, signIn, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, signIn, isAuthenticated, refreshDataUser }}>
             {children}
         </AuthContext.Provider>
     )
