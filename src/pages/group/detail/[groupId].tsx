@@ -73,7 +73,7 @@ export default function GroupDetail({ registersInitial, accountsRegistersInitial
                             </DefaultButtonLink>
                         </BoxButton>
                     </BoxTileAndActions>
-                    <TableRegister registers={registers} onChangeRegisters={useRegisters}/>
+                    <TableRegister registers={registers} onChangeRegisters={useRegisters} group={group} />
                     <TableAccountRegister accountsRegisters={accountsRegisters} />
                     <TableParticipants members={members} group={group}/>
                 </Body>

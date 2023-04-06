@@ -7,14 +7,16 @@ import moment from "moment";
 import { api } from "@/services/axios";
 import { ReturnRegister } from "@/@types/Request/ReturnRegister";
 import ModalRegisterEdit from "@/components/modal/edit/register";
+import { Group } from "@/@types/Group";
 
 
 export type TableRegisterProps = {
     registers: Register[],
     onChangeRegisters: Function,
+    group: Group,
 }
 
-export default function TableRegister({ registers, onChangeRegisters }: TableRegisterProps) {
+export default function TableRegister({ registers, onChangeRegisters, group }: TableRegisterProps) {
     
     
     async function onDeleteRegister(id: string) {
@@ -28,7 +30,7 @@ export default function TableRegister({ registers, onChangeRegisters }: TableReg
         <Container>
             <Header>
                 <Title>Registros</Title>
-                <ModalRegisterFilter onChangeRegisters={onChangeRegisters} />
+                <ModalRegisterFilter onChangeRegisters={onChangeRegisters} group={group} />
             </Header>
             <Table>
                 <THead>

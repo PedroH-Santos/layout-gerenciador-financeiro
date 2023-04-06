@@ -9,22 +9,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ListRegisters } from "@/@types/Request/ListRegisters";
 import { api } from "@/services/axios";
+import { Group } from "@/@types/Group";
 
 type ModalRegisterFilterProps = {
     onChangeRegisters: Function,
+    group: Group,
 }
 
 type FilterRegisterFormData = {
     name: string;
-    releaseDate: string;
 }
 const RegisterFilterValidation = zod.object({
     name: zod.string().optional(),
-    releaseDate: zod.string().optional(),
 })
 
 
-export default function ModalRegisterFilter({ onChangeRegisters }: ModalRegisterFilterProps) {
+export default function ModalRegisterFilter({ onChangeRegisters, group }: ModalRegisterFilterProps) {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterRegisterFormData>({
         resolver: zodResolver(RegisterFilterValidation)
@@ -34,19 +34,18 @@ export default function ModalRegisterFilter({ onChangeRegisters }: ModalRegister
         setOpen(false);
     }
     async function onFilter(form: FilterRegisterFormData) {
-        const { name, releaseDate } = form;
+        const { name } = form;
         let registers = [];
 
-        if (name == '' && releaseDate == '') {
-            registers = await api.get<ListRegisters>('/registers').then((res) => {
+        if (name == '' ) {
+            registers = await api.get<ListRegisters>(`/registers/${group}`).then((res) => {
                 return res.data.registers;
             });
         } else {
             const params = {
                 name,
-                createdAt: releaseDate,
             }
-            registers = await api.get<ListRegisters>('/register/filter', {
+            registers = await api.get<ListRegisters>('/registers/filter', {
                 params
             }).then((res) => {
                 return res.data.registers;
@@ -70,12 +69,6 @@ export default function ModalRegisterFilter({ onChangeRegisters }: ModalRegister
                 <BaseContent>
                     <BaseTitle >  Filtrar Lançamentos </BaseTitle>
                     <Form onSubmit={handleSubmit(onFilter)} method="post">
-                        <BoxInput>
-                            <DefaultLabel> Data de Lançamento </DefaultLabel>
-                            <DefaultInput type="text" {...register('releaseDate')} />
-                            <DefaultInputError> {errors.releaseDate?.message} </DefaultInputError>
-
-                        </BoxInput>
                         <BoxInput>
                             <DefaultLabel> Nome </DefaultLabel>
                             <DefaultInput type="text" {...register('name')} />
