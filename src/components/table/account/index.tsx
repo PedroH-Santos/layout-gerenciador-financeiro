@@ -3,6 +3,10 @@ import { Container, Button, FilterIcon, Header, Title, Table, Th, THead, TBody, 
 import { faFilter, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Account } from "@/@types/Account";
 import moment from "moment";
+import ModalDelete from "@/components/modal/delete/icon";
+import { ReturnAccount } from "@/@types/Request/ReturnAccount";
+import { api } from "@/services/axios";
+import ModalAccountEdit from "@/components/modal/edit/account";
 
 
 type TableAccountProps = {
@@ -11,7 +15,20 @@ type TableAccountProps = {
 }
 
 
+
+
+
 export default function TableAccount({ accounts, onChangeAccounts}: TableAccountProps) {
+
+    async function onDeleteAccount(id: string) {
+        const accountDeleted = await api.delete<ReturnAccount>(`accounts/${id}`).then((res) => {
+            return res.data.account;
+        })
+        const filterRegister = accounts.filter((account) => account.id !== accountDeleted.id);
+        onChangeAccounts(filterRegister);
+    }
+    console.log(accounts);
+
     return (
         <Container>
             <Header>
@@ -27,6 +44,7 @@ export default function TableAccount({ accounts, onChangeAccounts}: TableAccount
                         <Th> Parcelas </Th>
                         <Th> Tipo </Th>
                         <Th> Status </Th>
+                        <Th> </Th>
 
                     </tr>
                 </THead>
@@ -40,7 +58,13 @@ export default function TableAccount({ accounts, onChangeAccounts}: TableAccount
                                 <Td> {account.installments} </Td>
                                 <Td> {account.type} </Td>
                                 <Td> {account.status} </Td>
+                                <Td> 
+                                    <BoxIcons>
+                                        <ModalDelete name={account.name} onDeleteCallBack={onDeleteAccount} idDelete={account.id} />
+                                        <ModalAccountEdit currentAccount={account} onChangeAccount={onChangeAccounts} accounts={accounts}/> 
+                                    </BoxIcons>
 
+                                </Td>
                             </TrBody>
                         )
                     })}
