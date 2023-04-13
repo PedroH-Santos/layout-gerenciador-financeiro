@@ -2,6 +2,7 @@
 
 export const theme = {
     colors: {
+        brown900: "#473b32",
         brown800: "#736257",
         brown700: "#897160",
         brown600: "#9F826E",

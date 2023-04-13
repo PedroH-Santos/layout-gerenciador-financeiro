@@ -19,7 +19,7 @@ type RadixSelectProps = {
 
 
 export default function RadixSelect({ name, options, onValueChange, value , fncRef}: RadixSelectProps) {
-
+    const nameValueSelected = options.find((option) => option.value == value);
     function change(value: string) {
         onValueChange(value);
     }
@@ -27,8 +27,8 @@ export default function RadixSelect({ name, options, onValueChange, value , fncR
         <Root value={value} onValueChange={change} >
             <DefaultLabel> {name} </DefaultLabel>
             <TriggerRadix ref={fncRef}  >
-                <Value aria-label={value} > 
-                    {value}
+                <Value aria-label={nameValueSelected?.text} > 
+                    {nameValueSelected?.text}
                 </Value>
                 <Icon>
                     <IconFontAwesome icon={faChevronDown} />

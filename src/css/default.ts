@@ -81,6 +81,10 @@ export const DefaultInput = styled.input`
     &:focus {
         outline: none;
     }
+    &:read-only {
+        background-color: ${(props) => props.theme.colors.brown900};
+        cursor: not-allowed;
+    }
 `
 
 

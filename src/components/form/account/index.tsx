@@ -8,6 +8,7 @@ import { api } from "@/services/axios";
 import { InsertAccount } from "@/@types/Request/InsertAccount";
 import { TypeAccount } from "@/enum/TypeAccount";
 import { StatusAccount } from "@/enum/StatusAccount";
+import { useEffect, useState } from "react";
 
 type CreateAccountFormData = {
     name: string;
@@ -56,11 +57,18 @@ export default function AccountForm({ groupId }: AccountFormProps) {
             "value": "PARCEL"
         }
     ]
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<CreateAccountFormData>({
+    const { register, handleSubmit, formState: { errors }, control, reset, watch, setValue } = useForm<CreateAccountFormData>({
         resolver: zodResolver(createAccountValidation)
     })
+    const watchTypeAccount = watch("type");
+
+
     async function onCreate(form: CreateAccountFormData ){
-        const {dayDueDate,installments,name,price,status,type} = form;
+        let {dayDueDate,installments,name,price,status,type} = form;
+
+        if (type == TypeAccount.RECURRENT) {
+            installments = 1;
+        }
         const newAccounts = await api.post<InsertAccount>('/accounts', {
             name,
             price: price,
@@ -73,6 +81,14 @@ export default function AccountForm({ groupId }: AccountFormProps) {
             return res.data.account;
         });
     }
+
+    useEffect(() => {
+        if (watchTypeAccount == TypeAccount.RECURRENT) {
+            setValue("installments",1);
+        }
+
+        
+    },[setValue, watchTypeAccount])
     return (
         <Form onSubmit={handleSubmit(onCreate)} method="post">
             <BoxBreakInputs>
@@ -108,12 +124,13 @@ export default function AccountForm({ groupId }: AccountFormProps) {
                         )}
                     />
                     <DefaultInputError> {errors.type?.message} </DefaultInputError>
-                </BoxInput>
+                </BoxInput>                
                 <BoxInput>
                     <DefaultLabel> Parcelas </DefaultLabel>
-                    <DefaultInput  {...register('installments', { valueAsNumber: true })} />
+                    <DefaultInput  {...register('installments', { valueAsNumber: true })} readOnly={watchTypeAccount == TypeAccount.RECURRENT ? true : false} />
                     <DefaultInputError> {errors.installments?.message} </DefaultInputError>
                 </BoxInput>
+
             </BoxBreakInputs>
             <BoxBreakInputs>
                 <DefaultButton type="submit">
