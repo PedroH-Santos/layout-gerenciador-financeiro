@@ -1,5 +1,7 @@
+import { StatusMessageApi } from "@/hooks/useMessageApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { NumericFormat } from "react-number-format";
 import styled from "styled-components";
 
 
@@ -87,6 +89,32 @@ export const DefaultInput = styled.input`
     }
 `
 
+export const DefaultInputPrice = styled(NumericFormat)`
+    background-color: ${(props) => props.theme.colors.brown800};
+    padding: 0.8rem;
+    border: 0;
+    border-radius:0.5rem;
+    color: ${(props) => props.theme.colors.white500};
+    
+    &:focus {
+        outline: none;
+    }
+    &:read-only {
+        background-color: ${(props) => props.theme.colors.brown900};
+        cursor: not-allowed;
+    }  
+`
+
+
+type DefaultMessageApiProps = {
+    status: StatusMessageApi;
+}
+
+export const DefaultMessageApi = styled.div<DefaultMessageApiProps>`
+    background-color: ${(props) => (props.status == StatusMessageApi.SUCCESS) ? props.theme.colors.green500 : props.theme.colors.red500};
+    padding: 2rem;
+    color: ${(props) => props.theme.colors.white500}; 
+`
 
 
 export const DefaultInputError =styled.div`

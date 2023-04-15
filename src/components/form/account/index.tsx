@@ -1,4 +1,4 @@
-import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultInputError, DefaultInputPrice, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import { BoxBreakInputs, BoxGroupSelection, BoxInput, Form, InputSelectGroup } from "./styles";
 import RadixSelect from "@/components/radix/select";
 import * as zod from "zod";
@@ -9,6 +9,9 @@ import { InsertAccount } from "@/@types/Request/InsertAccount";
 import { TypeAccount } from "@/enum/TypeAccount";
 import { StatusAccount } from "@/enum/StatusAccount";
 import { useEffect, useState } from "react";
+import { NumericFormat } from 'react-number-format';
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
+
 
 type CreateAccountFormData = {
     name: string;
@@ -23,12 +26,12 @@ type AccountFormProps = {
     groupId: string;
 }
 const createAccountValidation = zod.object({
-    name: zod.string().min(1,'Digite um nome válido'),
-    price: zod.number(),
-    type: zod.string(),
-    status: zod.string(),
-    dayDueDate: zod.number(),
-    installments: zod.number().max(12),
+    name: zod.string().min(1, 'Digite um nome válido.'),
+    price: zod.number({ required_error: "Digite um preço válido. " }),
+    type: zod.string().min(1, 'Digite um tipo válido.'),
+    status: zod.string().min(1, 'Digite um status válido.'),
+    dayDueDate: zod.number({ required_error: "Digite um dia válido. ", invalid_type_error: "Digite um dia válido." }).lte(30, "A data de vencimento deve ser no intervalo do dia 1 até o dia 30."),
+    installments: zod.number({ required_error: "Digite uma parcela válida ", invalid_type_error: "Digite uma parcela válida." }).max(12, " O número máximo de parcelas é até máximo 12"),
 })
 
 
@@ -61,34 +64,40 @@ export default function AccountForm({ groupId }: AccountFormProps) {
         resolver: zodResolver(createAccountValidation)
     })
     const watchTypeAccount = watch("type");
+    const { messageApi, insertNewMessage} = useMessageApi();
 
-
-    async function onCreate(form: CreateAccountFormData ){
-        let {dayDueDate,installments,name,price,status,type} = form;
+    async function onCreate(form: CreateAccountFormData) {
+        let { dayDueDate, installments, name, price, status, type } = form;
 
         if (type == TypeAccount.RECURRENT) {
             installments = 1;
         }
-        const newAccounts = await api.post<InsertAccount>('/accounts', {
-            name,
-            price: price,
-            status,
-            type,
-            installments: installments,
-            dayDueDate: dayDueDate,
-            groupId: groupId
-        }).then((res) => {
-            return res.data.account;
-        });
+        try {
+            const newAccounts = await api.post<InsertAccount>('/accounts', {
+                name,
+                price: price,
+                status: 'teste',
+                type,
+                installments: installments,
+                dayDueDate: dayDueDate,
+                groupId: groupId
+            }).then((res) => {
+                insertNewMessage(StatusMessageApi.SUCCESS, "Conta cadastrada com sucesso !");
+                return res.data.account;
+            });
+        } catch (err: any) {
+            
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.message[0] as string);
+        }
     }
 
     useEffect(() => {
         if (watchTypeAccount == TypeAccount.RECURRENT) {
-            setValue("installments",1);
+            setValue("installments", 1);
         }
 
-        
-    },[setValue, watchTypeAccount])
+
+    }, [setValue, watchTypeAccount])
     return (
         <Form onSubmit={handleSubmit(onCreate)} method="post">
             <BoxBreakInputs>
@@ -99,12 +108,31 @@ export default function AccountForm({ groupId }: AccountFormProps) {
                 </BoxInput>
                 <BoxInput>
                     <DefaultLabel> Preço </DefaultLabel>
-                    <DefaultInput  {...register('price', { valueAsNumber: true })} />
+                    <Controller
+                        control={control}
+                        name="price"
+
+                        render={({ field: { onChange } }) => (
+                            <DefaultInputPrice
+                                name="price"
+                                displayType="input"
+                                thousandSeparator="."
+                                prefix="R$"
+                                decimalSeparator=","
+                                fixedDecimalScale={true}
+                                decimalScale={2}
+                                allowNegative={false}
+                                onChange={(event) => onChange(parseFloat((event.target.value.replace("R$", "").replace(".", "").replace(",", "."))))}
+
+                            />
+
+                        )}
+                    />
                     <DefaultInputError> {errors.price?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
                     <DefaultLabel> Dia de Vencimento </DefaultLabel>
-                    <DefaultInput  {...register('dayDueDate', { valueAsNumber: true})}  />
+                    <DefaultInput  {...register('dayDueDate', { valueAsNumber: true })} />
                     <DefaultInputError> {errors.dayDueDate?.message} </DefaultInputError>
                 </BoxInput>
                 <BoxInput>
@@ -124,7 +152,7 @@ export default function AccountForm({ groupId }: AccountFormProps) {
                         )}
                     />
                     <DefaultInputError> {errors.type?.message} </DefaultInputError>
-                </BoxInput>                
+                </BoxInput>
                 <BoxInput>
                     <DefaultLabel> Parcelas </DefaultLabel>
                     <DefaultInput  {...register('installments', { valueAsNumber: true })} readOnly={watchTypeAccount == TypeAccount.RECURRENT ? true : false} />
@@ -137,6 +165,13 @@ export default function AccountForm({ groupId }: AccountFormProps) {
                     Cadastrar
                 </DefaultButton>
             </BoxBreakInputs>
+            { messageApi && (
+                <BoxBreakInputs>
+                    <DefaultMessageApi status={messageApi.status}>
+                        {messageApi.message}
+                    </DefaultMessageApi>
+                </BoxBreakInputs>
+            )}
         </Form>
     )
 }
