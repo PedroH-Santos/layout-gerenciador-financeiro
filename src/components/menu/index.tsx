@@ -4,11 +4,17 @@ import { BoxIcon, BoxItems, Container} from "./styles";
 import ModalConfiguration from "../modal/configuration";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/authContext";
+import Action from "./action";
 
 
 
 
-export default function Menu() {    
+export default function Menu() {  
+    
+    const { signOut } = useContext(AuthContext);
+
+
+    
     return (
         <Container>
             <BoxIcon>
@@ -16,7 +22,7 @@ export default function Menu() {
             </BoxIcon>
             <BoxItems>
                 <Item icon={faUserGroup} text="Grupos" link="/group/list"/>
-                <Item icon={faRightFromBracket} text="Sair" link=""/>
+                <Action icon={faRightFromBracket} text="Sair" action={signOut} />
             </BoxItems>
         </Container>
     )

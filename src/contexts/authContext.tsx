@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useEffect, useState } from "react";
-import { setCookie, parseCookies } from "nookies";
+import { setCookie, parseCookies, destroyCookie } from "nookies";
 import Router, { useRouter } from "next/router";
 import { api } from "@/services/axios";
 import { User } from "@/@types/User";
@@ -8,8 +8,9 @@ export const AuthContext = createContext({} as AuthContextType);
 interface AuthContextType {
     isAuthenticated: Boolean;
     user: User | undefined;
-    signIn: (data: SignInData) => Promise<void>
-    refreshDataUser: () => Promise<void>
+    signIn: (data: SignInData) => Promise<void>;
+    refreshDataUser: () => Promise<void>;
+    signOut: () => Promise<void>;
 
 }
 
@@ -22,7 +23,7 @@ interface SignInData {
     password: string;
 }
 
-    
+
 interface ResponseToken {
     access_token: string;
     refresh_token: string;
@@ -42,16 +43,25 @@ export function AuthProvider({ children }: AuthContextProps) {
     const [user, setUser] = useState<User>();
     const isAuthenticated = !!user;
     async function signIn({ username, password }: SignInData) {
-        const response = await api.post<ResponseToken>('/login', {
-            username,
-            password
-        });
-        createCookiesToken(response.data); 
-        Router.push('/group/list');
+        try {
+            const response = await api.post<ResponseToken>('/login', {
+                username,
+                password
+            });
+            createCookiesToken(response.data);
+            Router.push('/group/list');
+        }catch(err) {
+            throw err;
+        }
+    }
+
+    async function signOut() {
+        destroyCookie(undefined, 'managerFinancial.token');
+        destroyCookie(undefined, 'managerFinancial.refreshToken');
     }
 
 
-    async function createCookiesToken(data: ResponseToken){
+    async function createCookiesToken(data: ResponseToken) {
         setCookie(undefined, 'managerFinancial.token', data.access_token, {
             maxAge: 60 * 15, //15 minutes
             path: '/'
@@ -64,25 +74,25 @@ export function AuthProvider({ children }: AuthContextProps) {
 
     }
 
-    async function requestRefreshToken(refreshToken: string){
+    async function requestRefreshToken(refreshToken: string) {
         const newToken = await api.get<ResponseToken>('/login/refresh', {
             headers: { 'Authorization': 'Bearer ' + refreshToken },
         })
         createCookiesToken(newToken.data);
     }
 
-    async function getNewUser(token: string | undefined){
-        if (token){
+    async function getNewUser(token: string | undefined) {
+        if (token) {
             const response = await api.get<ResponseGetNewUser>(`/login/profile`, {
                 headers: { 'Authorization': 'Bearer ' + token },
             });
             setUser(response.data.user);
 
-        } 
+        }
 
     }
 
-    async function refreshDataUser(){
+    async function refreshDataUser() {
         const { 'managerFinancial.token': token } = parseCookies();
         getNewUser(token);
     }
@@ -92,21 +102,21 @@ export function AuthProvider({ children }: AuthContextProps) {
         if (token) {
             //buscar os dados do usuário atualizado backend
             getNewUser(token);
-            
-        }else{  
+
+        } else {
             const { 'managerFinancial.refreshToken': refreshToken } = parseCookies();
             if (refreshToken) {
-                requestRefreshToken(refreshToken);   
-            }else {
+                requestRefreshToken(refreshToken);
+            } else {
                 Router.push('/login');
             }
 
-        }  
+        }
     }, []);
 
-    
+
     return (
-        <AuthContext.Provider value={{ user, signIn, isAuthenticated, refreshDataUser }}>
+        <AuthContext.Provider value={{ user, signIn, isAuthenticated, refreshDataUser, signOut }}>
             {children}
         </AuthContext.Provider>
     )
