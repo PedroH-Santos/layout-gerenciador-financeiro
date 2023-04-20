@@ -16,7 +16,7 @@ type MessageApi = {
 
 
 export function useMessageApi(){
-    const [messageApi, setMessageApi] = useState<MessageApi>();
+    const [messageApi, setMessageApi] = useState<MessageApi | undefined>();
 
 
     function insertNewMessage(status: StatusMessageApi, message: string){
@@ -27,10 +27,15 @@ export function useMessageApi(){
         setMessageApi(newMessageApi);
     }
 
+    function deleteNewMessage(){
+        setMessageApi(undefined);
+    }
+
 
     return {
         messageApi,
         insertNewMessage,
+        deleteNewMessage
     }
 
 }

@@ -9,6 +9,7 @@ import { ListGroups } from "@/@types/Request/ListGroups";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 type ModalGroupFilterProps = {
     onChangeGroups: Function,
@@ -29,6 +30,7 @@ export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterPro
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterGroupFormData>({
         resolver: zodResolver(groupFilterValidation)
     })
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
     function onBack() {
         setOpen(false);
@@ -37,26 +39,30 @@ export default function ModalGroupFilter({ onChangeGroups }: ModalGroupFilterPro
     async function onFilter(form: FilterGroupFormData) {
         const { name, code } = form;
         let groups = [];
+        try {
+            if (name == '' && code == '') {
+                groups = await api.get<ListGroups>('/groups').then((res) => {
+                    return res.data.groups;
+                });
+            } else {
+                const params = {
+                    name,
+                    code,
+                }
+                groups = await api.get<ListGroups>('/groups/filter', {
+                    params
+                }).then((res) => {
+                    return res.data.groups;
+                });
 
-        if (name == '' && code == ''){
-            groups = await api.get<ListGroups>('/groups').then((res) => {
-                return res.data.groups;
-            });
-        }else {
-            const params = {
-                name,
-                code,
             }
-            groups = await api.get<ListGroups>('/groups/filter', {
-                params
-            }).then((res) => {
-                return res.data.groups;
-            });
 
+            onBack();
+            deleteNewMessage();
+            onChangeGroups(groups);
+        } catch (err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
         }
-
-
-        onChangeGroups(groups);
     }
     return (
         <Root open={open} onOpenChange={setOpen}>

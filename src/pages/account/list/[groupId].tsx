@@ -42,7 +42,7 @@ export default function AccountList({ accountsInitial, groupId }: AccountListPro
                         </DefaultButtonReactLink>
                     </BoxButton>
                 </BoxTileAndActions>
-                <TableAccount accounts={accounts} onChangeAccounts={setAccounts} />
+                <TableAccount accounts={accounts} onChangeAccounts={setAccounts} groupId={groupId} />
             </Body>
         </Screen>
     )

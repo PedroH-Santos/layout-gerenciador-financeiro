@@ -3,13 +3,14 @@ import { BoxInput, Button, DialogContent, FilterIcon, Form, Input } from "./styl
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
-import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { api } from "@/services/axios";
 import { JoinGroup } from "@/@types/Request/JoinGroup";
 import { Group } from "@/@types/Group";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 type ModalGroupInProps = {
     onChangeGroups: Function,
@@ -29,7 +30,7 @@ export default function ModalGroupIn({ groups, onChangeGroups }: ModalGroupInPro
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<JoinGroupFormData>({
         resolver: zodResolver(joinGroupValidation)
     })
-
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
     function onBack() {
         setOpen(false);
     }
@@ -43,11 +44,13 @@ export default function ModalGroupIn({ groups, onChangeGroups }: ModalGroupInPro
                 return res.data.group;
             });;
             onChangeGroups([...groups, newGroup]);
-            setOpen(false);
-        } catch (err) {
-            console.log(err);
+            reset();
+            deleteNewMessage();
+            onBack();
+        } catch (err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
         }
-    }
+    } 
     return (
         <Root open={open} onOpenChange={setOpen}>
             <BaseTrigger>
@@ -66,6 +69,13 @@ export default function ModalGroupIn({ groups, onChangeGroups }: ModalGroupInPro
                             <DefaultInputError> {errors.code?.message} </DefaultInputError>
                         </BoxInput>
                         <DefaultButton type="submit"> Entrar </DefaultButton>
+                        {messageApi && (
+                            <BoxInput>
+                                <DefaultMessageApi status={messageApi.status}>
+                                    {messageApi.message}
+                                </DefaultMessageApi>
+                            </BoxInput>
+                        )}
                     </Form>
 
                 </DialogContent>

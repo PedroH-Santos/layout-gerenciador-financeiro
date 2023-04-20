@@ -25,6 +25,8 @@ import { Members } from "@/@types/Members";
 import ModalGroupEdit from "@/components/modal/edit/group";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/router";
+import { StatusRegister } from "@/enum/StatusRegister";
+import { StatusAccount } from "@/enum/StatusAccount";
 
 
 
@@ -46,6 +48,7 @@ export default function GroupDetail({ registersInitial, accountsRegistersInitial
     const [accountsRegisters, useAccountsRegisters] = useState<AccountRegister[]>(accountsRegistersInitial);
     const [members, UseMembers] = useState<Members[]>(membersInitial);
     const [group, useGroup] = useState<Group>(groupInitial);
+    const [total, setTotal] = useState(0);
     const { user } = useContext(AuthContext);
     const router = useRouter();
 
@@ -59,23 +62,53 @@ export default function GroupDetail({ registersInitial, accountsRegistersInitial
         if(!userLoggedJoinInGroup) {
             router.push("/group/list");
         }
+        
     }, []);
 
+
+    useEffect(() => {
+        onSumTotalValue();
+     }, [registers, accountsRegisters])
     async function onDeleteGroup(id: string) {
-        const groupDelete = await api.delete<ReturnGroup>(`groups/${id}`).then((res) => {
-            return res.data.group;
-        })
+        try {
+            const groupDelete = await api.delete<ReturnGroup>(`groups/${id}`).then((res) => {
+                return res.data.group;
+            })
+            router.push("/group/list");
+        }catch(err: any) {
+            throw err;
+        }
     }
     
+
+    async function onSumTotalValue(){
+        const sumTotalRegisters = registers.reduce((acc, value) => {
+            if (value.status == StatusRegister.DEPOSIT){
+                acc += value.price;
+            }else {
+                acc -= value.price;
+            }    
+            return acc;
+        },0);
+        const sumTotalRegistersAccount = accountsRegisters.reduce((acc, value) => {
+            if (value.status != StatusAccount.PAYED) {
+                acc -= value.price;
+            }
+            return acc;
+        }, 0);
+        setTotal(sumTotalRegisters + sumTotalRegistersAccount);
+    }
+
+
     return (
         <>
             <Screen>
                 <Menu />
                 <Body>
                     <BoxHeader>
-                        <BoxWallet>
-                            <Icons wallet={IconsType.POSITIVE} icon={faCirclePlus} />
-                            <TextWallet>R$ 1990,55</TextWallet>
+                        <BoxWallet wallet={(total >= 0 ? IconsType.POSITIVE : IconsType.NEGATIVE)}>
+                            <Icons  icon={faCirclePlus} />
+                            <TextWallet > {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}  </TextWallet>
                         </BoxWallet>
                     </BoxHeader>
                     <BoxTileAndActions>
@@ -137,6 +170,6 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
             accountsRegistersInitial: accountsRegisters,
             membersInitial: members,
             groupInitial: group,
-         },
-    }
+         }, 
+    } 
 }

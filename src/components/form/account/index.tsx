@@ -76,7 +76,7 @@ export default function AccountForm({ groupId }: AccountFormProps) {
             const newAccounts = await api.post<InsertAccount>('/accounts', {
                 name,
                 price: price,
-                status: 'teste',
+                status,
                 type,
                 installments: installments,
                 dayDueDate: dayDueDate,

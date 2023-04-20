@@ -3,8 +3,9 @@ import { DialogContent, DeleteButton, BackButton, ButtonContainer, DialogTrigger
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { BaseOverlay, BaseTrigger, BaseTitle } from "../../base/styles";
-import { DefaultButtonLink, DefaultIcon } from "@/css/default";
+import { DefaultButtonLink, DefaultIcon, DefaultMessageApi } from "@/css/default";
 import { Router, useRouter } from "next/router";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 
 type ModalDeleteProps = {
@@ -16,13 +17,17 @@ type ModalDeleteProps = {
 export default function ModalDeleteButton({ name, onDeleteCallBack, idDelete }: ModalDeleteProps) {
     const [open, setOpen] = useState(false);
     const router = useRouter();
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
     function onBack() {
         setOpen(false);
     }
     function onDelete() {
-        onDeleteCallBack(idDelete);
-        router.push("/group/list");
+        try{
+            onDeleteCallBack(idDelete); 
+        }catch(err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
+        }
     }
     return (
         <Root open={open} onOpenChange={setOpen}>
@@ -40,7 +45,13 @@ export default function ModalDeleteButton({ name, onDeleteCallBack, idDelete }: 
                         <DeleteButton onClick={onDelete}> Excluir </DeleteButton>
                         <BackButton onClick={onBack}> Voltar </BackButton>
                     </ButtonContainer>
-
+                    {messageApi && (
+                        <ButtonContainer>
+                            <DefaultMessageApi status={messageApi.status}>
+                                {messageApi.message}
+                            </DefaultMessageApi>
+                        </ButtonContainer>
+                    )}
                 </DialogContent>
             </Portal>
         </Root>

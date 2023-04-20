@@ -12,28 +12,32 @@ import ModalAccountEdit from "@/components/modal/edit/account";
 type TableAccountProps = {
     accounts: Account[];
     onChangeAccounts: Function;
+    groupId: string;
 }
 
 
 
 
 
-export default function TableAccount({ accounts, onChangeAccounts}: TableAccountProps) {
+export default function TableAccount({ accounts, onChangeAccounts, groupId }: TableAccountProps) {
 
     async function onDeleteAccount(id: string) {
-        const accountDeleted = await api.delete<ReturnAccount>(`accounts/${id}`).then((res) => {
-            return res.data.account;
-        })
-        const filterRegister = accounts.filter((account) => account.id !== accountDeleted.id);
-        onChangeAccounts(filterRegister);
+        try {
+            const accountDeleted = await api.delete<ReturnAccount>(`accounts/${id}`).then((res) => {
+                return res.data.account;
+            })
+            const filterRegister = accounts.filter((account) => account.id !== accountDeleted.id);
+            onChangeAccounts(filterRegister);
+        }catch(err: any) {
+            throw err;
+        }
     }
-    console.log(accounts);
 
     return (
         <Container>
             <Header>
                 <Title>Contas</Title>
-                <ModalAccountFilter onChangeAccounts={onChangeAccounts}/>
+                <ModalAccountFilter onChangeAccounts={onChangeAccounts} groupId={groupId}/>
             </Header>
             <Table>
                 <THead>

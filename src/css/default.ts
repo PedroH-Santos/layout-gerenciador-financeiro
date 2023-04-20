@@ -114,6 +114,7 @@ export const DefaultMessageApi = styled.div<DefaultMessageApiProps>`
     background-color: ${(props) => (props.status == StatusMessageApi.SUCCESS) ? props.theme.colors.green500 : props.theme.colors.red500};
     padding: 2rem;
     color: ${(props) => props.theme.colors.white500}; 
+    border-radius: 1rem;
 `
 
 

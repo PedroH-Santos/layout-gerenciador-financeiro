@@ -3,13 +3,14 @@ import {  BoxInput, Button, FilterIcon, Form } from "./styles";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
-import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ListRegisters } from "@/@types/Request/ListRegisters";
 import { api } from "@/services/axios";
 import { Group } from "@/@types/Group";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 type ModalRegisterFilterProps = {
     onChangeRegisters: Function,
@@ -29,32 +30,39 @@ export default function ModalRegisterFilter({ onChangeRegisters, group }: ModalR
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterRegisterFormData>({
         resolver: zodResolver(RegisterFilterValidation)
     })
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
     function onBack() {
         setOpen(false);
     }
     async function onFilter(form: FilterRegisterFormData) {
-        const { name } = form;
-        let registers = [];
-
-        if (name == '' ) {
-            registers = await api.get<ListRegisters>(`/registers/${group}`).then((res) => {
-                return res.data.registers;
-            });
-        } else {
-            const params = {
-                name,
+        try {
+            const { name } = form;
+            let registers = [];
+            if (name == '') {
+                registers = await api.get<ListRegisters>(`/registers/${group.id}`).then((res) => {
+                    return res.data.registers;
+                });
+            } else {
+                const params = {
+                    name,
+                }
+                registers = await api.get<ListRegisters>('/registers/filter', {
+                    params
+                }).then((res) => {
+                    return res.data.registers;
+                });
             }
-            registers = await api.get<ListRegisters>('/registers/filter', {
-                params
-            }).then((res) => {
-                return res.data.registers;
-            });
-
+            deleteNewMessage();
+            setOpen(false);
+            onChangeRegisters(registers);
+        }catch(err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
         }
 
 
-        onChangeRegisters(registers);
+
+        
     }
     return (
         <Root open={open} onOpenChange={setOpen}>
@@ -76,6 +84,14 @@ export default function ModalRegisterFilter({ onChangeRegisters, group }: ModalR
 
                         </BoxInput>
                         <DefaultButton type="submit"> Filtrar </DefaultButton>
+
+                        {messageApi && (
+                            <BoxInput>
+                                <DefaultMessageApi status={messageApi.status}>
+                                    {messageApi.message}
+                                </DefaultMessageApi>
+                            </BoxInput>
+                        )}
                     </Form>
 
                 </BaseContent>

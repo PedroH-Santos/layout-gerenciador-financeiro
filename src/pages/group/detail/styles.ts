@@ -6,7 +6,7 @@ export enum IconsType {
     "NEGATIVE"
 }
 
-type IconsProps = ThemedStyledProps<FontAwesomeIconProps, any> & {
+type IconsProps =  {
     wallet: IconsType
 }
 
@@ -28,7 +28,16 @@ export const BoxHeader = styled.div`
 `
 
 
-export const BoxWallet = styled.div`
+
+
+export const TextWallet = styled.span``
+export const Icons = styled(FontAwesomeIcon)`
+    width: 1rem;
+    height: 1rem;
+
+`
+
+export const BoxWallet = styled.div<IconsProps>`
     background-color: ${(props) => props.theme.colors.brown700};
     display: flex;
     justify-content: center;
@@ -36,22 +45,15 @@ export const BoxWallet = styled.div`
     padding: 3rem 6rem;
     gap: 0.5rem;
     border-radius:0.5rem;
+
+    ${Icons} {
+        color: ${(props) => props.wallet == IconsType.POSITIVE ? props.theme.colors.green500 : props.theme.colors.red500};
+
+    }
+    ${TextWallet}  {
+        color: ${(props) => props.wallet == IconsType.POSITIVE ? props.theme.colors.green500 : props.theme.colors.red500};
+    }
 `
-
-export const TextWallet = styled.span`
-    color: ${(props) => props.theme.colors.green500};
-
-
-`
-
-
-export const Icons = styled(FontAwesomeIcon) <IconsProps>`
-    color: ${(props) => props.wallet == IconsType.POSITIVE ? props.theme.colors.green500 : props.theme.colors.red500};
-    width: 1rem;
-    height: 1rem;
-
-`
-
 
 export const BoxButton = styled.div`
     display:flex;

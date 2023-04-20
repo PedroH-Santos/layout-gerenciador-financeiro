@@ -1,5 +1,5 @@
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
-import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultInputError, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import { Portal, Root } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { BoxBreak, BoxInput, BoxOptions, DialogTrigger, Form } from "./styles";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { api } from "@/services/axios";
 import { Group } from "@/@types/Group";
 import { InsertGroup } from "@/@types/Request/InsertGroup";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 
 type ModalGroupInsertProps = {
@@ -28,18 +29,24 @@ export default function ModalGroupInsert({ groups, onChangeGroups }: ModalGroupI
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<InsertGroupFormData>({
         resolver: zodResolver(groupInsertValidation)
     })
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
     async function onInsertGroup(form: InsertGroupFormData) {
-       const { name } = form;
-        const newGroup = await api.post<InsertGroup>('/groups', {
-            name,
-        }).then((res) => {
-            return res.data.group;
-        });
+        const { name } = form;
+        try {
+            const newGroup = await api.post<InsertGroup>('/groups', {
+                name,
+            }).then((res) => {
+                return res.data.group;
+            });
 
-        onChangeGroups([...groups,newGroup]);
-        setOpen(false);
-        
+            onChangeGroups([...groups, newGroup]);
+            deleteNewMessage();
+            reset();
+            setOpen(false);
+        } catch (err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
+        }
     }
     return (
         <Root open={open} onOpenChange={setOpen}>
@@ -53,12 +60,19 @@ export default function ModalGroupInsert({ groups, onChangeGroups }: ModalGroupI
                     <Form onSubmit={handleSubmit(onInsertGroup)} method="post">
                         <BoxInput>
                             <DefaultLabel> Nome </DefaultLabel>
-                            <DefaultInput type="text" {...register('name')}/>
+                            <DefaultInput type="text" {...register('name')} />
                             <DefaultInputError> {errors.name?.message} </DefaultInputError>
                         </BoxInput>
                         <BoxBreak>
                             <DefaultButton type="submit"> Cadastrar </DefaultButton>
                         </BoxBreak>
+                        {messageApi && (
+                            <BoxBreak>
+                                <DefaultMessageApi status={messageApi.status}>
+                                    {messageApi.message}
+                                </DefaultMessageApi>
+                            </BoxBreak>
+                        )}
                     </Form>
 
                 </BaseContent>

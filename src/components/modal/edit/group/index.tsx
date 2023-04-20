@@ -1,5 +1,5 @@
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
-import { DefaultButton, DefaultButtonLink, DefaultIcon, DefaultInput, DefaultInputError, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultButtonLink, DefaultIcon, DefaultInput, DefaultInputError, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import { Root, Trigger, Portal } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { BoxBreak, BoxInput, BoxOptions, DialogTrigger, Form } from "./styles";
@@ -14,6 +14,7 @@ import { Register } from "@/@types/Register";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { ReturnGroup } from "@/@types/Request/ReturnGroup";
 import { Group } from "@/@types/Group";
+import { StatusMessageApi, useMessageApi } from "@/hooks/useMessageApi";
 
 
 type ModalGroupEditProps = {
@@ -28,25 +29,32 @@ const groupEditValidation = zod.object({
     name: zod.string().min(1, 'Digite um nome válido'),
 })
 
-export default function ModalGroupEdit({  onChangeGroup, currentGroup }: ModalGroupEditProps) {
+export default function ModalGroupEdit({ onChangeGroup, currentGroup }: ModalGroupEditProps) {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<EditGroupFormData>({
         resolver: zodResolver(groupEditValidation)
     })
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
     async function onEditGroup(form: EditGroupFormData) {
         const { name } = form;
-        const newGroup = await api.put<ReturnGroup>(`/groups/${currentGroup.id}`, {
-            name,
-        }).then((res) => {
-            return res.data.group;
-        });
-        const newListGroups = {
-            ...currentGroup,
-            name: newGroup.name,
-        };;
-        onChangeGroup(newListGroups);
-
+        try {
+            const newGroup = await api.put<ReturnGroup>(`/groups/${currentGroup.id}`, {
+                name,
+            }).then((res) => {
+                return res.data.group;
+            });
+            const newListGroups = {
+                ...currentGroup,
+                name: newGroup.name,
+            };
+            deleteNewMessage();
+            setOpen(false);
+            reset();
+            onChangeGroup(newListGroups);
+        } catch (err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
+        }
     }
 
     return (
@@ -56,7 +64,7 @@ export default function ModalGroupEdit({  onChangeGroup, currentGroup }: ModalGr
                     <DefaultIcon icon={faPenToSquare} />
                     Editar
                 </DefaultButtonLink>
-                
+
             </DialogTrigger>
             <Portal>
                 <BaseOverlay />
@@ -65,14 +73,20 @@ export default function ModalGroupEdit({  onChangeGroup, currentGroup }: ModalGr
                     <Form onSubmit={handleSubmit(onEditGroup)} method="post">
                         <BoxInput>
                             <DefaultLabel> Nome </DefaultLabel>
-                            <DefaultInput type="text" {...register("name")} defaultValue={currentGroup.name}/>
+                            <DefaultInput type="text" {...register("name")} defaultValue={currentGroup.name} />
                             <DefaultInputError> {errors.name?.message} </DefaultInputError>
                         </BoxInput>
                         <BoxBreak>
                             <DefaultButton type="submit"> Editar </DefaultButton>
                         </BoxBreak>
                     </Form>
-
+                    {messageApi && (
+                        <BoxBreak>
+                            <DefaultMessageApi status={messageApi.status}>
+                                {messageApi.message}
+                            </DefaultMessageApi>
+                        </BoxBreak>
+                    )}
                 </BaseContent>
             </Portal>
         </Root>

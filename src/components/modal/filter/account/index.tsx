@@ -3,16 +3,18 @@ import { BoxInput, Button, FilterIcon, Form } from "./styles";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { BaseContent, BaseOverlay, BaseTitle, BaseTrigger } from "../../base/styles";
-import { DefaultButton, DefaultInput, DefaultLabel } from "@/css/default";
+import { DefaultButton, DefaultInput, DefaultLabel, DefaultMessageApi } from "@/css/default";
 import RadixSelect from "@/components/radix/select";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { ListAccounts } from "@/@types/Request/ListAccounts";
 import { api } from "@/services/axios";
+import { useMessageApi, StatusMessageApi } from "@/hooks/useMessageApi";
 
 type ModalAccountFilterProps = {
     onChangeAccounts: Function,
+    groupId: string;
 }
 
 type FilterAccountFormData = {
@@ -30,16 +32,17 @@ const accountFilterValidation = zod.object({
 
 
 
-export default function ModalAccountFilter({ onChangeAccounts }: ModalAccountFilterProps) {
+export default function ModalAccountFilter({ onChangeAccounts, groupId }: ModalAccountFilterProps) {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FilterAccountFormData>({
         resolver: zodResolver(accountFilterValidation)
     })
+    const { messageApi, insertNewMessage, deleteNewMessage } = useMessageApi();
 
-    
+
     const typeStatesAccount = [
         {
-            "text" : "Paga",
+            "text": "Paga",
             "value": "PAYED"
         },
         {
@@ -50,7 +53,7 @@ export default function ModalAccountFilter({ onChangeAccounts }: ModalAccountFil
             "text": "Aguardando Pagamento",
             "value": "PENDING"
         }
-    ] 
+    ]
     const typeAccount = [
         {
             "text": "Recorrente",
@@ -60,38 +63,44 @@ export default function ModalAccountFilter({ onChangeAccounts }: ModalAccountFil
             "text": "Parcelada",
             "value": "PARCEL"
         }
-    ] 
+    ]
     function onBack() {
         setOpen(false);
     }
 
     async function onFilter(form: FilterAccountFormData) {
-        const { name, dayDueDate, status, type } = form;
-        let accounts = [];
-        let traitStatus = status == 'Nenhum' ? "" : status;
-        let traitType = type == 'Nenhum' ? "" : type;
+        try {
+            const { name, dayDueDate, status, type } = form;
+            let accounts = [];
+            let traitStatus = status == 'Nenhum' ? "" : status;
+            let traitType = type == 'Nenhum' ? "" : type;
 
-        if (dayDueDate == '' && status == 'Nenhum' && name == '' && type == 'Nenhum') {
-            accounts = await api.get<ListAccounts>('/accounts').then((res) => {
-                return res.data.accounts;
-            });
-        } else {
-            const params = {
-                name,
-                dayDueDate,
-                status: traitStatus,
-                type: traitType,
+            if (dayDueDate == '' && status == 'Nenhum' && name == '' && type == 'Nenhum') {
+                accounts = await api.get<ListAccounts>(`/accounts/${groupId}`).then((res) => {
+                    return res.data.accounts;
+                });
+            } else {
+                const params = {
+                    name,
+                    dayDueDate,
+                    status: traitStatus,
+                    type: traitType,
+                    groupId: groupId,
+                }
+                accounts = await api.get<ListAccounts>('/accounts/filter', {
+                    params
+                }).then((res) => {
+                    return res.data.accounts;
+                });
+
             }
-            accounts = await api.get<ListAccounts>('/accounts/filter', {
-                params
-            }).then((res) => {
-                return res.data.accounts;
-            });
+            deleteNewMessage();
+            setOpen(false);
+            onChangeAccounts(accounts);
+        } catch (err: any) {
+            insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
 
         }
-
-
-        onChangeAccounts(accounts);
     }
 
 
@@ -119,7 +128,7 @@ export default function ModalAccountFilter({ onChangeAccounts }: ModalAccountFil
                         <BoxInput>
                             <Controller control={control} name="status" defaultValue="Nenhum"
                                 render={({ field: { onChange, value, ref, ...props } }) => (
-                                    <RadixSelect name="Status" options={typeStatesAccount} onValueChange={onChange} value={value} fncRef={ref}/> 
+                                    <RadixSelect name="Status" options={typeStatesAccount} onValueChange={onChange} value={value} fncRef={ref} />
                                 )}
                             />
                         </BoxInput>
@@ -131,10 +140,18 @@ export default function ModalAccountFilter({ onChangeAccounts }: ModalAccountFil
                             />
                         </BoxInput>
                         <DefaultButton type="submit"> Filtrar </DefaultButton>
+
+                        {messageApi && (
+                            <BoxInput>
+                                <DefaultMessageApi status={messageApi.status}>
+                                    {messageApi.message}
+                                </DefaultMessageApi>
+                            </BoxInput>
+                        )}
                     </Form>
 
                 </BaseContent>
-            </Portal> 
+            </Portal>
         </Root>
     );
 };
