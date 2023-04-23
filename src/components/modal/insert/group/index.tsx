@@ -45,6 +45,7 @@ export default function ModalGroupInsert({ groups, onChangeGroups }: ModalGroupI
             reset();
             setOpen(false);
         } catch (err: any) {
+            console.log(err);
             insertNewMessage(StatusMessageApi.ERROR, err.response.data.error);
         }
     }
